@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block header_title %}Registro Central{% endblock %}
+{% block header_subtitle %}Listado Maestro de Incidencias Campus{% endblock %}
+
+{% block content %}
+<div class="card-corporate overflow-hidden">
+    <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input 
+                    type="text" 
+                    placeholder="Buscar incidencia..." 
+                    class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-primary/30 w-64"
+                />
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-slate-50/50 border-b border-slate-100">
+                    <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Asunto</th>
+                    <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Estado</th>
+                    <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Prioridad</th>
+                    <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Ubicación</th>
+                    <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Fecha</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for incident in incidencias %}
+                <tr class="hover:bg-slate-50/80 transition-all group cursor-pointer">
+                    <td class="px-8 py-6">
+                        <div>
+                            <p class="font-bold text-slate-900 text-sm group-hover:text-primary transition-colors">{{ incident.title }}</p>
+                            <p class="text-xs text-slate-400 font-medium truncate max-w-[250px] mt-1">{{ incident.description }}</p>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2 h-2 rounded-full {% if incident.status == 'OPEN' %}bg-amber-500{% elif incident.status == 'IN_PROGRESS' %}bg-blue-500{% else %}bg-emerald-500{% endif %}"></span>
+                            <span class="text-xs font-semibold text-slate-600 capitalize">{{ incident.get_status_display }}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest 
+                            {% if incident.priority == 'URGENT' %}bg-red-50 text-red-600 border border-red-100
+                            {% elif incident.priority == 'HIGH' %}bg-orange-50 text-orange-600 border border-orange-100
+                            {% elif incident.priority == 'MEDIUM' %}bg-blue-50 text-blue-600 border border-blue-100
+                            {% else %}bg-slate-50 text-slate-500 border border-slate-100{% endif %}">
+                            {{ incident.get_priority_display }}
+                        </span>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-2 text-slate-500 text-xs font-medium">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-300"></i>
+                            {{ incident.location }}
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-xs font-medium text-slate-400">
+                        {{ incident.created_at|date:"d M, Y" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-8 py-12 text-center text-slate-400 font-medium italic">
+                        No hay incidencias registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

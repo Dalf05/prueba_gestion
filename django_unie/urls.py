@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from unie_app import views
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('incidencias/', views.incidents_list, name='incidents_list'),
     path('incidencias/nueva/', views.create_incident, name='create_incident'),
     path('incidencias/<int:pk>/estado/', views.update_status, name='update_status'),
+    path('configuracion/', views.settings_view, name='settings'),
 ]

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block header_title %}Nueva Incidencia{% endblock %}
+{% block header_subtitle %}Registrar reporte en el sistema{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="card-corporate p-10">
+        <form method="post" class="space-y-8">
+            {% csrf_token %}
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asunto de la Incidencia</label>
+                <input 
+                    type="text" 
+                    name="title"
+                    required
+                    placeholder="Ej: Proyector Aula 203 no enciende"
+                    class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium"
+                />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Categoría</label>
+                    <select 
+                        name="category"
+                        required
+                        class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium appearance-none"
+                    >
+                        <option value="TI">TI / Tecnología</option>
+                        <option value="INFRAESTRUCTURA">Infraestructura</option>
+                        <option value="MOBILIARIO">Mobiliario</option>
+                        <option value="LIMPIEZA">Limpieza</option>
+                        <option value="SEGURIDAD">Seguridad</option>
+                        <option value="ACADEMICA">Gestión Académica</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Ubicación</label>
+                    <input 
+                        type="text" 
+                        name="location"
+                        required
+                        placeholder="Ej: Edificio A - Planta 2"
+                        class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium"
+                    />
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Descripción Detallada</label>
+                <textarea 
+                    name="description"
+                    required
+                    rows="4"
+                    placeholder="Describe lo ocurrido con el mayor detalle posible..."
+                    class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium resize-none"
+                ></textarea>
+            </div>
+
+            <div class="pt-6 flex gap-4">
+                <a href="{% url 'incidents_list' %}" class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-bold text-center hover:bg-slate-200 transition-all">
+                    Cancelar
+                </a>
+                <button 
+                    type="submit"
+                    class="flex-[2] bg-primary text-white rounded-2xl py-4 font-bold shadow-xl shadow-primary/20 hover:opacity-95 transition-all"
+                >
+                    Enviar Reporte
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

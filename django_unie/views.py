@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_ some_object
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Incidencia, Comentario
 
@@ -21,6 +21,8 @@ def dashboard(request):
     elif request.user.role == 'DOCENTE':
         categories = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
         queryset = Incidencia.objects.filter(category__in=categories)
+    else:
+        queryset = Incidencia.objects.none()
     
     # CÁLCULO DE KPIs PARA EL PANEL
     total_count = queryset.count()
@@ -31,8 +33,6 @@ def dashboard(request):
     # Tiempo medio de resolución (simulado o calculado si hay datos)
     avg_res_time = 0
     if resolved_count > 0:
-        # Lógica para calcular diferencia entre resolved_at y created_at
-        # En una tarea de clase, puedes explicar que se usa F expressions o agregación
         avg_res_time = 14 # Valor de ejemplo en horas
         
     context = {
@@ -40,7 +40,7 @@ def dashboard(request):
         'open_count': open_count,
         'resolved_count': resolved_count,
         'avg_res_time': avg_res_time,
-        'sla_compliance': 92, # % de ejemplo
+        'sla_compliance': 94, # % de ejemplo
         'role': request.user.role
     }
     return render(request, 'dashboard.html', context)
@@ -57,9 +57,11 @@ def incidents_list(request):
     elif user.role == 'ALUMNO':
         categories = ['LIMPIEZA', 'MOBILIARIO', 'ACADEMICA', 'MATRICULA']
         queryset = Incidencia.objects.filter(category__in=categories)
+    else:
+        queryset = Incidencia.objects.none()
     
     # QUITAMOS LAS RESUELTAS Y CERRADAS DEL REGISTRO ACTIVO
-    incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED'])
+    incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
         
     return render(request, 'incidents.html', {'incidencias': incidencias})
 
@@ -73,8 +75,6 @@ def create_incident(request):
         description = request.POST.get('description')
         
         # SCRIPT DE ANÁLISIS AUTOMÁTICO DE PRIORIDAD
-        # En una implementación real, aquí llamaríamos a un servicio de IA
-        # o usaríamos lógica de palabras clave para asignar la prioridad.
         priority = analyze_priority_logic(title, description)
         
         incidencia = Incidencia.objects.create(
@@ -87,6 +87,12 @@ def create_incident(request):
         )
         return redirect('incidents_list')
     return render(request, 'create_incident.html')
+
+@login_required
+@user_passes_test(is_admin)
+def settings_view(request):
+    locations = ['Edificio A', 'Edificio B', 'Laboratorios', 'Biblioteca', 'Cafetería', 'Zonas Deportivas']
+    return render(request, 'settings.html', {'locations': locations})
 
 def analyze_priority_logic(title, description):
     """
@@ -123,4 +129,4 @@ def update_status(request, pk):
             incidencia.resolved_at = timezone.now()
             
         incidencia.save()
-    return redirect('incident_detail', pk=pk)
+    return redirect('incidents_list')
