@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 from .models import Incidencia, Comentario
 
 # Funciones de comprobación de roles para decoradores
@@ -60,8 +61,12 @@ def incidents_list(request):
     else:
         queryset = Incidencia.objects.none()
     
-    # QUITAMOS LAS RESUELTAS Y CERRADAS DEL REGISTRO ACTIVO
-    incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
+    # Para el Admin y Técnico, mostramos TODO en el registro central por defecto
+    # Para otros, solo las activas
+    if user.role in ['ADMIN', 'TECNICO']:
+        incidencias = queryset.order_by('-created_at')
+    else:
+        incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
         
     return render(request, 'incidents.html', {'incidencias': incidencias})
 
@@ -85,6 +90,7 @@ def create_incident(request):
             priority=priority,
             created_by=request.user
         )
+        messages.success(request, f'Incidencia "{title}" registrada correctamente con prioridad {incidencia.get_priority_display()}.')
         return redirect('incidents_list')
     return render(request, 'create_incident.html')
 
