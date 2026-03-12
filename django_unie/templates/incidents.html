@@ -43,6 +43,7 @@
                         <th class="px-8 py-4 col-header">Ubicación</th>
                         <th class="px-8 py-4 col-header">Reportado por</th>
                         <th class="px-8 py-4 col-header">Fecha</th>
+                        <th class="px-8 py-4 col-header">Acción</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -84,6 +85,25 @@
                         </td>
                         <td class="px-8 py-5 text-[10px] font-bold text-slate-400 data-value">
                             {{ incident.created_at|date:"d/m/Y H:i" }}
+                        </td>
+                        <td class="px-8 py-5">
+                            {% if user.role == 'ADMIN' or user.role == 'TECNICO' %}
+                            <form action="{% url 'update_status' incident.pk %}" method="post" class="flex items-center gap-2">
+                                {% csrf_token %}
+                                <select name="status" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded-lg text-[9px] font-bold uppercase px-2 py-1 outline-none focus:border-primary/30">
+                                    <option value="OPEN" {% if incident.status == 'OPEN' %}selected{% endif %}>Abierta</option>
+                                    <option value="IN_PROGRESS" {% if incident.status == 'IN_PROGRESS' %}selected{% endif %}>En Proceso</option>
+                                    <option value="RESOLVED" {% if incident.status == 'RESOLVED' %}selected{% endif %}>Resuelta</option>
+                                    <option value="CLOSED" {% if incident.status == 'CLOSED' %}selected{% endif %}>Cerrada</option>
+                                </select>
+                            </form>
+                            {% elif incident.created_by == user and incident.status != 'CLOSED' %}
+                            <form action="{% url 'update_status' incident.pk %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="CLOSED">
+                                <button type="submit" class="text-[9px] font-bold uppercase text-red-500 hover:underline">Cerrar</button>
+                            </form>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}

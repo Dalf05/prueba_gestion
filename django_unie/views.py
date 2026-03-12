@@ -122,17 +122,30 @@ def analyze_priority_logic(title, description):
     return 'LOW'
 
 @login_required
-@user_passes_test(is_tecnico)
 def update_status(request, pk):
     incidencia = get_object_or_404(Incidencia, pk=pk)
+    
+    # Solo el Admin, el Técnico o el propio creador pueden modificar el estado
+    if request.user.role not in ['ADMIN', 'TECNICO'] and incidencia.created_by != request.user:
+        messages.error(request, "No tienes permiso para modificar esta incidencia.")
+        return redirect('incidents_list')
+
     if request.method == 'POST':
         nuevo_estado = request.POST.get('status')
+        
+        # Si no es admin/tecnico, solo puede cambiar a CLOSED
+        if request.user.role not in ['ADMIN', 'TECNICO'] and nuevo_estado != 'CLOSED':
+            messages.error(request, "Solo puedes cerrar tus propias incidencias.")
+            return redirect('incidents_list')
+            
         incidencia.status = nuevo_estado
         
-        # Si se marca como resuelto, guardamos la fecha
+        # Si se marca como resuelto o cerrado, guardamos la fecha
         if nuevo_estado in ['RESOLVED', 'CLOSED'] and not incidencia.resolved_at:
             from django.utils import timezone
             incidencia.resolved_at = timezone.now()
             
         incidencia.save()
+        messages.success(request, f'Estado de la incidencia #{incidencia.id} actualizado a {incidencia.get_status_display()}.')
+        
     return redirect('incidents_list')
