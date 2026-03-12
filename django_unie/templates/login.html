@@ -60,6 +60,13 @@
                 <p class="text-slate-400 font-medium">Introduce tus credenciales para continuar</p>
             </div>
 
+            {% if form.errors %}
+            <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl">
+                <p class="text-xs font-bold text-red-600 uppercase tracking-widest mb-1">Error de Acceso</p>
+                <p class="text-sm text-red-500 font-medium">Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.</p>
+            </div>
+            {% endif %}
+
             <form method="post" class="space-y-6">
                 {% csrf_token %}
                 <div class="space-y-2">
