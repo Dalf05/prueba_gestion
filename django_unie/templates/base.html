@@ -5,141 +5,199 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNIE Universidad - Portal de Gestión</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --unie-blue: #002147;
             --unie-gold: #C5A059;
             --bg-slate: #F8FAFC;
+            --sidebar-bg: #0F172A;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-slate); }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-slate);
+            -webkit-font-smoothing: antialiased;
+        }
+        
         .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
         .bg-primary { background-color: var(--unie-blue); }
         .text-primary { color: var(--unie-blue); }
-        .border-primary { border-color: var(--unie-blue); }
         
-        /* Recipe 1: Technical Dashboard / Data Grid feel */
-        .data-card {
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            transition: all 0.2s ease;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
+
+        /* Modern Card Style */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.03);
         }
-        .data-card:hover {
-            border-color: var(--unie-blue);
-            box-shadow: 0 4px 20px rgba(0, 33, 71, 0.05);
+        
+        .sidebar-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .col-header {
-            font-family: 'Georgia', serif;
-            font-style: italic;
-            font-size: 11px;
-            opacity: 0.6;
+        
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .status-badge {
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-        .data-value {
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: -0.02em;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
     </style>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex overflow-hidden">
 
     <!-- Sidebar -->
-    <aside class="w-20 lg:w-72 bg-primary flex flex-col h-screen sticky top-0 transition-all duration-300 z-40 shadow-2xl">
-        <div class="p-8 mb-8">
+    <aside class="w-20 lg:w-72 bg-[#0F172A] flex flex-col h-screen sticky top-0 transition-all duration-300 z-50">
+        <!-- Logo Section -->
+        <div class="p-8 mb-4">
             <div class="flex items-center gap-3">
-                <div class="flex flex-col justify-center">
-                    <div class="flex items-center gap-2">
-                        <span class="font-black text-2xl text-white leading-none">unie</span>
-                        <div class="w-6 h-6 relative">
-                            <svg viewBox="0 0 100 100" class="w-full h-full" fill="white">
-                                <g transform="translate(50,50)">
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(0)" />
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(60)" />
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(120)" />
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(180)" />
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(240)" />
-                                    <rect x="4" y="-45" width="14" height="42" transform="rotate(300)" />
-                                </g>
-                            </svg>
-                        </div>
-                    </div>
-                    <span class="text-[8px] font-bold tracking-[0.1em] leading-none mt-1 text-white/70 uppercase">
-                        Universidad
-                    </span>
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-white/5">
+                    <svg viewBox="0 0 100 100" class="w-6 h-6" fill="#002147">
+                        <g transform="translate(50,50)">
+                            <rect x="4" y="-45" width="14" height="42" transform="rotate(0)" />
+                            <rect x="4" y="-45" width="14" height="42" transform="rotate(120)" />
+                            <rect x="4" y="-45" width="14" height="42" transform="rotate(240)" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="hidden lg:block">
+                    <span class="font-display font-extrabold text-xl text-white tracking-tighter leading-none block">UNIE</span>
+                    <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Universidad</span>
                 </div>
             </div>
         </div>
 
-        <nav class="flex-1 px-4 space-y-2">
-            <a href="{% url 'dashboard' %}" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {% if request.resolver_match.url_name == 'dashboard' %}bg-white/10 text-white shadow-inner{% else %}text-white/60 hover:bg-white/5 hover:text-white{% endif %}">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                <span class="hidden lg:block font-semibold text-sm">Panel de Control</span>
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 space-y-1.5">
+            <div class="px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest hidden lg:block">Menú Principal</div>
+            
+            <a href="{% url 'dashboard' %}" class="sidebar-item flex items-center gap-4 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'dashboard' %}active text-white{% else %}text-slate-400 hover:text-white hover:bg-white/5{% endif %}">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                <span class="hidden lg:block font-semibold text-sm">Dashboard</span>
             </a>
-            <a href="{% url 'incidents_list' %}" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {% if request.resolver_match.url_name == 'incidents_list' %}bg-white/10 text-white shadow-inner{% else %}text-white/60 hover:bg-white/5 hover:text-white{% endif %}">
-                <i data-lucide="list-filter" class="w-5 h-5"></i>
-                <span class="hidden lg:block font-semibold text-sm">Registro Central</span>
+            
+            <a href="{% url 'incidents_list' %}" class="sidebar-item flex items-center gap-4 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'incidents_list' %}active text-white{% else %}text-slate-400 hover:text-white hover:bg-white/5{% endif %}">
+                <i data-lucide="ticket" class="w-5 h-5"></i>
+                <span class="hidden lg:block font-semibold text-sm">Incidencias</span>
             </a>
+
             {% if user.role == 'ADMIN' %}
-            <a href="{% url 'settings' %}" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group {% if request.resolver_match.url_name == 'settings' %}bg-white/10 text-white shadow-inner{% else %}text-white/60 hover:bg-white/5 hover:text-white{% endif %}">
-                <i data-lucide="settings" class="w-5 h-5"></i>
-                <span class="hidden lg:block font-semibold text-sm">Configuración</span>
+            <div class="pt-4 px-4 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest hidden lg:block">Administración</div>
+            <a href="{% url 'settings' %}" class="sidebar-item flex items-center gap-4 px-4 py-3 rounded-xl {% if request.resolver_match.url_name == 'settings' %}active text-white{% else %}text-slate-400 hover:text-white hover:bg-white/5{% endif %}">
+                <i data-lucide="settings-2" class="w-5 h-5"></i>
+                <span class="hidden lg:block font-semibold text-sm">Ajustes Globales</span>
             </a>
             {% endif %}
         </nav>
 
-        <div class="p-6 mt-auto">
-            <div class="bg-white/5 rounded-2xl p-4 flex items-center gap-3 border border-white/10">
-                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 bg-white/10 flex items-center justify-center">
-                    <span class="text-white font-bold text-xs">{{ user.username|slice:":1"|upper }}</span>
+        <!-- User Profile Section -->
+        <div class="p-4 mt-auto border-t border-white/5">
+            <div class="bg-white/5 rounded-2xl p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg">
+                    {{ user.username|slice:":1"|upper }}
                 </div>
-                <div class="hidden lg:block">
-                    <p class="text-xs font-bold text-white">{{ user.get_role_display }}</p>
-                    <p class="text-[10px] text-white/40">Portal UNIE</p>
+                <div class="hidden lg:block flex-1 min-w-0">
+                    <p class="text-xs font-bold text-white truncate">{{ user.username|capfirst }}</p>
+                    <p class="text-[10px] text-slate-500 font-medium">{{ user.get_role_display }}</p>
                 </div>
             </div>
-            <form action="{% url 'logout' %}" method="post" class="mt-4">
+            <form action="{% url 'logout' %}" method="post" class="mt-3">
                 {% csrf_token %}
-                <button type="submit" class="w-full py-2 text-[10px] font-bold text-white/40 hover:text-white uppercase tracking-widest transition-colors">
-                    Cerrar Sesión
+                <button type="submit" class="w-full py-2.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-rose-400 hover:bg-rose-400/10 transition-all uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    <span class="hidden lg:block">Cerrar Sesión</span>
                 </button>
             </form>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-24 bg-white/80 backdrop-blur-md border-b border-slate-200 px-10 flex items-center justify-between sticky top-0 z-30">
-            <div>
-                <h2 class="text-2xl font-display font-extrabold text-primary tracking-tight">
-                    {% block header_title %}Panel Académico{% endblock %}
-                </h2>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
-                    {% block header_subtitle %}Gestión de Incidencias Campus{% endblock %}
-                </p>
+    <main class="flex-1 flex flex-col h-screen relative">
+        <!-- Header -->
+        <header class="h-20 bg-white/70 backdrop-blur-xl border-b border-slate-200/60 px-8 flex items-center justify-between sticky top-0 z-40">
+            <div class="flex items-center gap-4">
+                <div class="lg:hidden">
+                    <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div>
+                    <h2 class="text-xl font-display font-bold text-slate-900 tracking-tight">
+                        {% block header_title %}Portal Académico{% endblock %}
+                    </h2>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            {% block header_subtitle %}SISTEMA OPERATIVO{% endblock %}
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-slate-500">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <input type="text" placeholder="Buscar..." class="bg-transparent border-none text-xs font-medium focus:ring-0 w-32">
+                </div>
+                
                 {% if user.role != 'TECNICO' %}
-                <a href="{% url 'create_incident' %}" class="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-primary/20">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    <span>Nueva Entrada</span>
+                <a href="{% url 'create_incident' %}" class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Nueva Incidencia</span>
                 </a>
                 {% endif %}
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-10">
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-8 bg-[#F8FAFC]">
+            {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                <div class="p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-100{% else %}bg-rose-50 text-rose-700 border border-rose-100{% endif %} shadow-sm animate-in fade-in slide-in-from-top-4">
+                    <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="w-5 h-5"></i>
+                    <p class="text-sm font-semibold">{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             {% block content %}{% endblock %}
         </div>
 
-        <footer class="h-12 bg-white border-t border-slate-200 px-10 flex items-center justify-between">
-            <div class="flex gap-8"></div>
-            <div class="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">
-                © 2026 UNIE Universidad - Portal de Gestión Académica
+        <!-- Footer -->
+        <footer class="h-10 bg-white border-t border-slate-200/60 px-8 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">
+            <span>UNIE Universidad v2.0</span>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                    Soporte Técnico
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                    Privacidad
+                </span>
             </div>
         </footer>
     </main>

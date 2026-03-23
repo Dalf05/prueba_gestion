@@ -1,75 +1,106 @@
 {% extends "base.html" %}
 
 {% block header_title %}Nueva Incidencia{% endblock %}
-{% block header_subtitle %}Registrar reporte en el sistema{% endblock %}
+{% block header_subtitle %}REGISTRAR REPORTE EN EL SISTEMA CAMPUS{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto">
-    <div class="card-corporate p-10">
-        <form method="post" class="space-y-8">
-            {% csrf_token %}
-            <div class="space-y-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asunto de la Incidencia</label>
-                <input 
-                    type="text" 
-                    name="title"
-                    required
-                    placeholder="Ej: Proyector Aula 203 no enciende"
-                    class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium"
-                />
+<div class="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div class="glass-card p-12 rounded-[3rem] relative overflow-hidden">
+        <!-- Decorative Background Element -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
+                    <i data-lucide="file-plus-2" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-display font-bold text-slate-900">Formulario de Reporte</h3>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Completa los detalles para una resolución rápida</p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Categoría</label>
-                    <select 
-                        name="category"
-                        required
-                        class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium appearance-none"
+            <form method="post" class="space-y-10">
+                {% csrf_token %}
+                
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asunto de la Incidencia</label>
+                    <div class="relative group">
+                        <i data-lucide="type" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                        <input 
+                            type="text" 
+                            name="title"
+                            required
+                            placeholder="Ej: Proyector Aula 203 no enciende"
+                            class="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-16 pr-8 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-medium text-slate-700 placeholder:text-slate-300"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-3">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Categoría</label>
+                        <div class="relative group">
+                            <i data-lucide="layers" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                            <select 
+                                name="category"
+                                required
+                                class="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-16 pr-12 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-medium text-slate-700 appearance-none cursor-pointer"
+                            >
+                                <option value="" disabled selected>Selecciona una categoría</option>
+                                <option value="TI">TI / Tecnología</option>
+                                <option value="INFRAESTRUCTURA">Infraestructura</option>
+                                <option value="MOBILIARIO">Mobiliario</option>
+                                <option value="LIMPIEZA">Limpieza</option>
+                                <option value="SEGURIDAD">Seguridad</option>
+                                <option value="ACADEMICA">Gestión Académica</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 pointer-events-none"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Ubicación</label>
+                        <div class="relative group">
+                            <i data-lucide="map-pin" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                            <input 
+                                type="text" 
+                                name="location"
+                                required
+                                placeholder="Ej: Edificio A - Planta 2"
+                                class="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-16 pr-8 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-medium text-slate-700 placeholder:text-slate-300"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Descripción Detallada</label>
+                    <div class="relative group">
+                        <i data-lucide="align-left" class="absolute left-6 top-6 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                        <textarea 
+                            name="description"
+                            required
+                            rows="5"
+                            placeholder="Describe lo ocurrido con el mayor detalle posible para que el equipo técnico pueda actuar rápidamente..."
+                            class="w-full bg-white border border-slate-200 rounded-2xl py-5 pl-16 pr-8 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all font-medium text-slate-700 placeholder:text-slate-300 resize-none"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-10 flex flex-col sm:flex-row gap-6">
+                    <a href="{% url 'incidents_list' %}" class="flex-1 py-5 bg-slate-50 text-slate-500 rounded-2xl font-bold text-center hover:bg-slate-100 transition-all uppercase tracking-widest text-[10px]">
+                        Cancelar
+                    </a>
+                    <button 
+                        type="submit"
+                        class="flex-[2] bg-primary text-white rounded-2xl py-5 font-bold shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-[10px]"
                     >
-                        <option value="TI">TI / Tecnología</option>
-                        <option value="INFRAESTRUCTURA">Infraestructura</option>
-                        <option value="MOBILIARIO">Mobiliario</option>
-                        <option value="LIMPIEZA">Limpieza</option>
-                        <option value="SEGURIDAD">Seguridad</option>
-                        <option value="ACADEMICA">Gestión Académica</option>
-                    </select>
+                        Enviar Reporte al Sistema
+                    </button>
                 </div>
-                <div class="space-y-2">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Ubicación</label>
-                    <input 
-                        type="text" 
-                        name="location"
-                        required
-                        placeholder="Ej: Edificio A - Planta 2"
-                        class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium"
-                    />
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Descripción Detallada</label>
-                <textarea 
-                    name="description"
-                    required
-                    rows="4"
-                    placeholder="Describe lo ocurrido con el mayor detalle posible..."
-                    class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 px-6 outline-none focus:border-primary/30 focus:bg-white transition-all font-medium resize-none"
-                ></textarea>
-            </div>
-
-            <div class="pt-6 flex gap-4">
-                <a href="{% url 'incidents_list' %}" class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl font-bold text-center hover:bg-slate-200 transition-all">
-                    Cancelar
-                </a>
-                <button 
-                    type="submit"
-                    class="flex-[2] bg-primary text-white rounded-2xl py-4 font-bold shadow-xl shadow-primary/20 hover:opacity-95 transition-all"
-                >
-                    Enviar Reporte
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

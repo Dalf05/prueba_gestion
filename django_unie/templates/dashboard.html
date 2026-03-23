@@ -1,103 +1,144 @@
 {% extends "base.html" %}
 
 {% block header_title %}Panel de Control{% endblock %}
-{% block header_subtitle %}Estadísticas y Rendimiento Campus{% endblock %}
+{% block header_subtitle %}ESTADÍSTICAS Y RENDIMIENTO CAMPUS{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
-    <!-- Header Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="data-card p-6 flex flex-col justify-between">
-            <span class="col-header">Total Incidencias</span>
-            <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-4xl font-display font-extrabold text-primary data-value">{{ total_count }}</span>
-                <span class="text-[10px] font-bold text-emerald-500">+12%</span>
+<div class="space-y-8 animate-in fade-in duration-700">
+    <!-- Header Stats (Bento Grid) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">+12%</span>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Incidencias</p>
+            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ total_count }}</h3>
+            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="bar-chart-3" class="w-24 h-24"></i>
             </div>
         </div>
-        <div class="data-card p-6 flex flex-col justify-between border-l-4 border-l-amber-500">
-            <span class="col-header">Pendientes Activas</span>
-            <div class="mt-4">
-                <span class="text-4xl font-display font-extrabold text-amber-600 data-value">{{ open_count }}</span>
+
+        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[10px] font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">Activas</span>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pendientes</p>
+            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ open_count }}</h3>
+            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="clock" class="w-24 h-24"></i>
             </div>
         </div>
-        <div class="data-card p-6 flex flex-col justify-between">
-            <span class="col-header">Tiempo Medio Resol.</span>
-            <div class="mt-4">
-                <span class="text-4xl font-display font-extrabold text-indigo-600 data-value">{{ avg_res_time }}h</span>
+
+        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                </div>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tiempo Resol.</p>
+            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ avg_res_time }}h</h3>
+            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="zap" class="w-24 h-24"></i>
             </div>
         </div>
-        <div class="data-card p-6 flex flex-col justify-between">
-            <span class="col-header">Cumplimiento SLA</span>
-            <div class="mt-4">
-                <span class="text-4xl font-display font-extrabold text-emerald-600 data-value">{{ sla_compliance }}%</span>
+
+        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">Excelente</span>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">SLA Compliance</p>
+            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ sla_compliance }}%</h3>
+            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
+                <i data-lucide="shield-check" class="w-24 h-24"></i>
             </div>
         </div>
     </div>
 
-    <!-- Main Dashboard Area -->
+    <!-- Main Charts Section -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Chart Area -->
-        <div class="lg:col-span-2 data-card p-8">
-            <div class="flex items-center justify-between mb-8">
+        <!-- Activity Chart -->
+        <div class="lg:col-span-2 glass-card p-8 rounded-[2rem]">
+            <div class="flex items-center justify-between mb-10">
                 <div>
-                    <h4 class="text-sm font-bold text-primary uppercase tracking-widest">Actividad del Campus</h4>
-                    <p class="text-xs text-slate-400 mt-1 italic font-serif">Volumen de incidencias por categoría (Últimos 30 días)</p>
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest">Actividad del Campus</h4>
+                    <p class="text-xs text-slate-400 mt-1">Volumen de incidencias por categoría (Tiempo Real)</p>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-primary"></span>
+                        <span class="w-2 h-2 rounded-full bg-primary"></span>
                         <span class="text-[10px] font-bold text-slate-500 uppercase">Reportes</span>
                     </div>
                 </div>
             </div>
             
-            <div id="activity-chart" class="w-full h-64"></div>
+            <div id="activity-chart" class="w-full h-72"></div>
         </div>
 
-        <!-- Secondary Info -->
-        <div class="space-y-6">
-            <div class="data-card p-6 bg-primary text-white overflow-hidden relative">
+        <!-- Right Column -->
+        <div class="space-y-8">
+            <!-- System Status -->
+            <div class="bg-primary p-8 rounded-[2rem] text-white relative overflow-hidden group">
                 <div class="relative z-10">
-                    <span class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Estado del Sistema</span>
-                    <h4 class="text-xl font-display font-bold mt-2">Operativo</h4>
-                    <div class="mt-6 flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                        <span class="text-xs font-medium text-white/80">Todos los servicios activos</span>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Estado del Sistema</span>
+                    </div>
+                    <h4 class="text-3xl font-display font-bold">Operativo</h4>
+                    <p class="text-sm text-white/60 mt-2">Todos los servicios del campus están funcionando correctamente.</p>
+                    
+                    <div class="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Live Sync</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-white/40">v2.0.4</span>
                     </div>
                 </div>
-                <div class="absolute -right-8 -bottom-8 opacity-10">
-                    <i data-lucide="shield-check" class="w-32 h-32"></i>
+                <div class="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                    <i data-lucide="globe" class="w-48 h-48"></i>
                 </div>
             </div>
 
-            <div class="data-card p-6">
-                <span class="col-header mb-4 block">Distribución de Carga</span>
-                <div class="space-y-4">
+            <!-- Distribution -->
+            <div class="glass-card p-8 rounded-[2rem]">
+                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Carga por Categoría</h4>
+                <div class="space-y-6">
                     <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-1">
-                            <span>TI / Tecnología</span>
-                            <span>45%</span>
+                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                            <span class="text-slate-600">TI / Tecnología</span>
+                            <span class="text-primary">45%</span>
                         </div>
-                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-primary" style="width: 45%"></div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: 45%"></div>
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-1">
-                            <span>Infraestructura</span>
-                            <span>30%</span>
+                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                            <span class="text-slate-600">Infraestructura</span>
+                            <span class="text-amber-500">30%</span>
                         </div>
-                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-amber-500" style="width: 30%"></div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 rounded-full" style="width: 30%"></div>
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-1">
-                            <span>Otros</span>
-                            <span>25%</span>
+                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
+                            <span class="text-slate-600">Mobiliario</span>
+                            <span class="text-indigo-500">25%</span>
                         </div>
-                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-slate-400" style="width: 25%"></div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full" style="width: 25%"></div>
                         </div>
                     </div>
                 </div>
@@ -107,20 +148,19 @@
 </div>
 
 <script>
-    // Simple D3 Chart
     document.addEventListener('DOMContentLoaded', () => {
         const data = [
-            {label: 'TI', value: 40},
-            {label: 'Infra', value: 25},
-            {label: 'Mobiliario', value: 15},
-            {label: 'Limpieza', value: 10},
-            {label: 'Seguridad', value: 10}
+            {label: 'TI', value: 40, color: '#002147'},
+            {label: 'Infra', value: 25, color: '#F59E0B'},
+            {label: 'Mobiliario', value: 15, color: '#6366F1'},
+            {label: 'Limpieza', value: 10, color: '#10B981'},
+            {label: 'Seguridad', value: 10, color: '#EF4444'}
         ];
 
         const chartContainer = document.getElementById('activity-chart');
-        const margin = {top: 20, right: 20, bottom: 30, left: 40};
+        const margin = {top: 20, right: 20, bottom: 40, left: 40};
         const width = chartContainer.clientWidth - margin.left - margin.right;
-        const height = 256 - margin.top - margin.bottom;
+        const height = chartContainer.clientHeight - margin.top - margin.bottom;
 
         const svg = d3.select("#activity-chart")
             .append("svg")
@@ -138,26 +178,46 @@
             .range([height, 0])
             .domain([0, 50]);
 
+        // Grid lines
+        svg.append("g")			
+            .attr("class", "grid")
+            .attr("stroke", "#F1F5F9")
+            .attr("stroke-width", 1)
+            .call(d3.axisLeft(y)
+                .ticks(5)
+                .tickSize(-width)
+                .tickFormat("")
+            )
+            .call(g => g.select(".domain").remove());
+
+        // X Axis
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).tickSize(0).tickPadding(10))
+            .call(d3.axisBottom(x).tickSize(0).tickPadding(15))
             .call(g => g.select(".domain").remove())
             .selectAll("text")
             .style("font-size", "10px")
-            .style("font-weight", "bold")
+            .style("font-weight", "700")
             .style("text-transform", "uppercase")
             .style("fill", "#94A3B8");
 
+        // Bars
         svg.selectAll(".bar")
             .data(data)
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", d => x(d.label))
             .attr("width", x.bandwidth())
+            .attr("y", height)
+            .attr("height", 0)
+            .attr("rx", 8)
+            .attr("fill", d => d.color)
+            .transition()
+            .duration(1000)
             .attr("y", d => y(d.value))
-            .attr("height", d => height - y(d.value))
-            .attr("rx", 4)
-            .attr("fill", "#002147");
+            .attr("height", d => height - y(d.value));
+            
+        lucide.createIcons();
     });
 </script>
 {% endblock %}
