@@ -15,12 +15,12 @@
         .text-primary { color: #002147; }
     </style>
 </head>
-<body class="bg-white min-h-screen flex items-stretch">
-    <div class="w-full grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+<body class="bg-white h-screen flex items-stretch overflow-hidden">
+    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
         <!-- Left Side: Visual/Branding -->
-        <div class="relative hidden lg:block overflow-hidden">
+        <div class="relative hidden lg:block overflow-hidden h-full">
             <img 
-                src="{% static 'campus_unie.avif' %}" 
+                src="{% static 'campus_unie.jpg' %}" 
                 alt="Campus UNIE" 
                 class="absolute inset-0 w-full h-full object-cover"
                 referrerpolicy="no-referrer"
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Right Side: Form -->
-        <div class="p-12 lg:p-24 flex flex-col justify-center bg-white">
+        <div class="p-12 lg:p-24 flex flex-col justify-center bg-white h-full overflow-y-auto lg:overflow-hidden">
             <div class="mb-12">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="flex flex-col justify-center">
