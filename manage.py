@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+# Script administrador de Django - UNIE
+# Se usa para arrancar el servidor, hacer migraciones, etc.
 import os
 import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'unifix_project.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'proyecto.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

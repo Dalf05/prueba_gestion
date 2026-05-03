@@ -18,7 +18,7 @@ Esta es la versión completa en Django y Python del portal de gestión de incide
 2. **Preparar la Base de Datos:**
    Ejecuta las migraciones para crear las tablas necesarias:
    ```bash
-   python manage.py makemigrations django_unie
+   python manage.py makemigrations gestion
    python manage.py migrate
    ```
 

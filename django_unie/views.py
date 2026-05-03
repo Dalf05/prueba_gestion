@@ -1,176 +1,186 @@
+# Vistas de la aplicación de Gestión de Incidencias - UNIE
+# Este archivo controla toda la lógica de lo que el usuario ve en pantalla.
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import Incidencia, Comentario
 
-# Funciones de comprobación de roles para decoradores
-def is_admin(user):
+# Estas funciones sirven para saber si el usuario es jefe o técnico
+def es_administrador(user):
     return user.role == 'ADMIN'
 
-def is_tecnico(user):
+def es_equipo_soporte(user):
     return user.role == 'TECNICO' or user.role == 'ADMIN'
 
 @login_required
 def dashboard(request):
-    # Los alumnos no ven el dashboard de estadísticas, solo el listado
+    # Si eres alumno, no pintas nada viendo estadísticas, así que te mando a la lista
     if request.user.role == 'ALUMNO':
         return redirect('incidents_list')
     
-    # Filtrado de incidencias según rol
+    # Aquí decidimos qué incidencias puede ver cada uno según su puesto
     if request.user.role in ['ADMIN', 'TECNICO']:
-        queryset = Incidencia.objects.all()
+        los_reportes = Incidencia.objects.all()
     elif request.user.role == 'DOCENTE':
-        categories = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
-        queryset = Incidencia.objects.filter(category__in=categories)
+        # Los profes solo ven cosas de su ámbito
+        categorias_profe = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
+        los_reportes = Incidencia.objects.filter(category__in=categorias_profe)
     else:
-        queryset = Incidencia.objects.none()
+        los_reportes = Incidencia.objects.none()
     
-    # CÁLCULO DE KPIs PARA EL PANEL
-    total_count = queryset.count()
-    open_count = queryset.filter(status__in=['OPEN', 'IN_PROGRESS']).count()
-    resolved_qs = queryset.filter(status__in=['RESOLVED', 'CLOSED'])
-    resolved_count = resolved_qs.count()
+    # Calculamos los numeritos del panel (KPIs)
+    cantidad_total = los_reportes.count()
+    pendientes = los_reportes.filter(status__in=['OPEN', 'IN_PROGRESS']).count()
+    resueltas_qs = los_reportes.filter(status__in=['RESOLVED', 'CLOSED'])
+    cantidad_resueltas = resueltas_qs.count()
     
-    # Tiempo medio de resolución (calculado si hay datos)
-    avg_res_time = 0
-    if resolved_count > 0:
-        total_time = 0
+    # Calcular cuánto tardamos de media en arreglar cosas
+    tiempo_medio_arreglo = 0
+    if cantidad_resueltas > 0:
+        suma_tiempos = 0
         from django.utils import timezone
-        for inc in resolved_qs:
-            if inc.resolved_at:
-                diff = inc.resolved_at - inc.created_at
-                total_time += diff.total_seconds() / 3600
-        avg_res_time = round(total_time / resolved_count, 1) if resolved_count > 0 else 0
+        for item in resueltas_qs:
+            if item.resolved_at:
+                diferencia = item.resolved_at - item.created_at
+                suma_tiempos += diferencia.total_seconds() / 3600
+        tiempo_medio_arreglo = round(suma_tiempos / cantidad_resueltas, 1) if cantidad_resueltas > 0 else 0
         
-    # Cumplimiento SLA (ejemplo de cálculo real: % resueltas sobre totales)
-    sla_compliance = 0
-    if total_count > 0:
-        sla_compliance = round((resolved_count / total_count) * 100)
+    # El cumplimiento SLA es un porcentaje de lo que hemos terminado
+    cumplimiento_sla = 0
+    if cantidad_total > 0:
+        cumplimiento_sla = round((cantidad_resueltas / cantidad_total) * 100)
         
-    # Datos para el gráfico de distribución por categoría
+    # Preparamos los datos para que el gráfico de la web funcione (formato JSON)
     from django.db.models import Count
     import json
-    category_counts = queryset.values('category').annotate(count=Count('id'))
-    chart_data = [
-        {'label': dict(Incidencia.CATEGORY_CHOICES).get(item['category'], item['category']), 'value': item['count']}
-        for item in category_counts
+    conteo_por_categoria = los_reportes.values('category').annotate(total=Count('id'))
+    datos_para_grafico = [
+        {'label': dict(Incidencia.CATEGORY_CHOICES).get(item['category'], item['category']), 'value': item['total']}
+        for item in conteo_por_categoria
     ]
     
-    context = {
-        'total_count': total_count,
-        'open_count': open_count,
-        'resolved_count': resolved_count,
-        'avg_res_time': avg_res_time,
-        'sla_compliance': sla_compliance,
-        'recent_incidents': queryset.order_by('-created_at')[:5],
-        'chart_data_json': json.dumps(chart_data),
+    # Mandamos todo al documento HTML (dashboard.html)
+    info_para_web = {
+        'total_count': cantidad_total,
+        'open_count': pendientes,
+        'resolved_count': cantidad_resueltas,
+        'avg_res_time': tiempo_medio_arreglo,
+        'sla_compliance': cumplimiento_sla,
+        'recent_incidents': los_reportes.order_by('-created_at')[:5],
+        'chart_data_json': json.dumps(datos_para_grafico),
         'role': request.user.role
     }
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html', info_para_web)
 
 @login_required
 def incidents_list(request):
-    user = request.user
-    # Filtramos por categorías según rol
-    if user.role in ['ADMIN', 'TECNICO']:
-        queryset = Incidencia.objects.all()
-    elif user.role == 'DOCENTE':
-        categories = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
-        queryset = Incidencia.objects.filter(category__in=categories)
-    elif user.role == 'ALUMNO':
-        categories = ['LIMPIEZA', 'MOBILIARIO', 'ACADEMICA', 'MATRICULA']
-        queryset = Incidencia.objects.filter(category__in=categories)
-    else:
-        queryset = Incidencia.objects.none()
+    usuario_actual = request.user
     
-    # Para el Admin y Técnico, mostramos TODO en el registro central por defecto
-    # Para otros, solo las activas
-    if user.role in ['ADMIN', 'TECNICO']:
-        incidencias = queryset.order_by('-created_at')
+    # Lógica de filtrado: cada uno ve lo que le toca
+    if usuario_actual.role in ['ADMIN', 'TECNICO']:
+        listado_completo = Incidencia.objects.all()
+    elif usuario_actual.role == 'DOCENTE':
+        categorias = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
+        listado_completo = Incidencia.objects.filter(category__in=categorias)
+    elif usuario_actual.role == 'ALUMNO':
+        categorias = ['LIMPIEZA', 'MOBILIARIO', 'ACADEMICA', 'MATRICULA']
+        listado_completo = Incidencia.objects.filter(category__in=categorias)
     else:
-        incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
+        listado_completo = Incidencia.objects.none()
+    
+    # Si eres jefe o técnico ves el histórico, si no, solo lo que está abierto
+    if usuario_actual.role in ['ADMIN', 'TECNICO']:
+        las_incidencias = listado_completo.order_by('-created_at')
+    else:
+        las_incidencias = listado_completo.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
         
-    return render(request, 'incidents.html', {'incidencias': incidencias})
+    return render(request, 'incidents.html', {'incidencias': las_incidencias})
 
 @login_required
 def create_incident(request):
+    # Un técnico no debería estar creando incidencias, él está para arreglarlas
     if request.user.role == 'TECNICO':
-        return redirect('dashboard') # Los técnicos no crean, solo resuelven
+        return redirect('dashboard')
         
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
+        el_titulo = request.POST.get('title')
+        la_descripcion = request.POST.get('description')
         
-        # SCRIPT DE ANÁLISIS AUTOMÁTICO DE PRIORIDAD
-        priority = analyze_priority_logic(title, description)
+        # Aquí usamos la función que analiza el texto para ver si es urgente o no
+        la_prioridad = analizar_urgencia(el_titulo, la_descripcion)
         
-        incidencia = Incidencia.objects.create(
-            title=title,
-            description=description,
+        nueva_incidencia = Incidencia.objects.create(
+            title=el_titulo,
+            description=la_descripcion,
             category=request.POST.get('category'),
             location=request.POST.get('location'),
-            priority=priority,
+            priority=la_prioridad,
             created_by=request.user
         )
-        messages.success(request, f'Incidencia "{title}" registrada correctamente con prioridad {incidencia.get_priority_display()}.')
+        messages.success(request, f'La incidencia "{el_titulo}" se ha guardado bien. Prioridad calculada: {nueva_incidencia.get_priority_display()}.')
         return redirect('incidents_list')
     return render(request, 'create_incident.html')
 
 @login_required
-@user_passes_test(is_admin)
+@user_passes_test(es_administrador)
 def settings_view(request):
     from .models import User
-    users = User.objects.exclude(pk=request.user.pk)
-    # Por ahora las ubicaciones son un conjunto de las usadas en incidencias reales
-    locations = Incidencia.objects.values_list('location', flat=True).distinct()
-    return render(request, 'settings.html', {'system_users': users, 'locations': locations})
+    # Listamos a los demás usuarios del sistema para gestión
+    otros_usuarios = User.objects.exclude(pk=request.user.pk)
+    # Sacamos las sitios que ya existen en la base de datos
+    sitios_registrados = Incidencia.objects.values_list('location', flat=True).distinct()
+    return render(request, 'settings.html', {'system_users': otros_usuarios, 'locations': sitios_registrados})
 
-def analyze_priority_logic(title, description):
+def analizar_urgencia(titulo, descripcion):
     """
-    Script de segmentación automática de prioridad.
-    Analiza palabras clave para determinar la urgencia.
+    Esta función mira si hay palabras 'chungas' en el reporte para ponerle prioridad alta.
+    Es un filtro de texto sencillo.
     """
-    text = (title + " " + description).lower()
+    todo_el_texto = (titulo + " " + descripcion).lower()
     
-    # Prioridad URGENTE: Peligro, rotura crítica, seguridad
-    if any(word in text for word in ['peligro', 'fuego', 'inundación', 'robo', 'emergencia', 'crítico']):
+    # Si hay peligro real
+    palabras_criticas = ['peligro', 'fuego', 'quemado', 'inundación', 'robo', 'emergencia', 'crítico', 'urgente']
+    if any(paly in todo_el_texto for paly in palabras_criticas):
         return 'URGENT'
     
-    # Prioridad ALTA: Bloqueo de clases o administración
-    if any(word in text for word in ['no funciona', 'bloqueado', 'roto', 'clase', 'examen']):
+    # Si impide dar clase o trabajar
+    palabras_importantes = ['no funciona', 'bloqueado', 'roto', 'clase', 'examen', 'parado', 'avería']
+    if any(paly in todo_el_texto for paly in palabras_importantes):
         return 'HIGH'
     
-    # Prioridad MEDIA: Funcionamiento parcial o incomodidad
-    if any(word in text for word in ['luz', 'aire', 'sucio', 'ruido']):
+    # Si es algo molesto pero se puede esperar
+    palabras_medias = ['luz', 'aire', 'sucio', 'ruido', 'bombilla', 'ventana']
+    if any(paly in todo_el_texto for paly in palabras_medias):
         return 'MEDIUM'
         
     return 'LOW'
 
 @login_required
 def update_status(request, pk):
-    incidencia = get_object_or_404(Incidencia, pk=pk)
+    el_reporte = get_object_or_404(Incidencia, pk=pk)
     
-    # Solo el Admin, el Técnico o el propio creador pueden modificar el estado
-    if request.user.role not in ['ADMIN', 'TECNICO'] and incidencia.created_by != request.user:
-        messages.error(request, "No tienes permiso para modificar esta incidencia.")
+    # Comprobamos permisos: solo jefes, técnicos o el que lo escribió pueden tocarlo
+    if request.user.role not in ['ADMIN', 'TECNICO'] and el_reporte.created_by != request.user:
+        messages.error(request, "No puedes tocar una incidencia que no es tuya.")
         return redirect('incidents_list')
 
     if request.method == 'POST':
-        nuevo_estado = request.POST.get('status')
+        estado_nuevo = request.POST.get('status')
         
-        # Si no es admin/tecnico, solo puede cambiar a CLOSED
-        if request.user.role not in ['ADMIN', 'TECNICO'] and nuevo_estado != 'CLOSED':
-            messages.error(request, "Solo puedes cerrar tus propias incidencias.")
+        # Un usuario normal solo puede cerrar su reporte, no cambiarlo a 'en proceso' por ejemplo
+        if request.user.role not in ['ADMIN', 'TECNICO'] and estado_nuevo != 'CLOSED':
+            messages.error(request, "Solo el equipo de soporte puede cambiar estados intermedios.")
             return redirect('incidents_list')
             
-        incidencia.status = nuevo_estado
+        el_reporte.status = estado_nuevo
         
-        # Si se marca como resuelto o cerrado, guardamos la fecha
-        if nuevo_estado in ['RESOLVED', 'CLOSED'] and not incidencia.resolved_at:
+        # Guardamos cuándo se cerró para luego sacar las estadísticas
+        if estado_nuevo in ['RESOLVED', 'CLOSED'] and not el_reporte.resolved_at:
             from django.utils import timezone
-            incidencia.resolved_at = timezone.now()
+            el_reporte.resolved_at = timezone.now()
             
-        incidencia.save()
-        messages.success(request, f'Estado de la incidencia #{incidencia.id} actualizado a {incidencia.get_status_display()}.')
+        el_reporte.save()
+        messages.success(request, f'Se ha actualizado el reporte #{el_reporte.id} correctamente.')
         
     return redirect('incidents_list')
