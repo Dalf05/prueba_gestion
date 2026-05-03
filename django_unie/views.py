@@ -31,17 +31,39 @@ def dashboard(request):
     resolved_qs = queryset.filter(status__in=['RESOLVED', 'CLOSED'])
     resolved_count = resolved_qs.count()
     
-    # Tiempo medio de resolución (simulado o calculado si hay datos)
+    # Tiempo medio de resolución (calculado si hay datos)
     avg_res_time = 0
     if resolved_count > 0:
-        avg_res_time = 14 # Valor de ejemplo en horas
+        total_time = 0
+        from django.utils import timezone
+        for inc in resolved_qs:
+            if inc.resolved_at:
+                diff = inc.resolved_at - inc.created_at
+                total_time += diff.total_seconds() / 3600
+        avg_res_time = round(total_time / resolved_count, 1) if resolved_count > 0 else 0
         
+    # Cumplimiento SLA (ejemplo de cálculo real: % resueltas sobre totales)
+    sla_compliance = 0
+    if total_count > 0:
+        sla_compliance = round((resolved_count / total_count) * 100)
+        
+    # Datos para el gráfico de distribución por categoría
+    from django.db.models import Count
+    import json
+    category_counts = queryset.values('category').annotate(count=Count('id'))
+    chart_data = [
+        {'label': dict(Incidencia.CATEGORY_CHOICES).get(item['category'], item['category']), 'value': item['count']}
+        for item in category_counts
+    ]
+    
     context = {
         'total_count': total_count,
         'open_count': open_count,
         'resolved_count': resolved_count,
         'avg_res_time': avg_res_time,
-        'sla_compliance': 94, # % de ejemplo
+        'sla_compliance': sla_compliance,
+        'recent_incidents': queryset.order_by('-created_at')[:5],
+        'chart_data_json': json.dumps(chart_data),
         'role': request.user.role
     }
     return render(request, 'dashboard.html', context)
@@ -97,8 +119,11 @@ def create_incident(request):
 @login_required
 @user_passes_test(is_admin)
 def settings_view(request):
-    locations = ['Edificio A', 'Edificio B', 'Laboratorios', 'Biblioteca', 'Cafetería', 'Zonas Deportivas']
-    return render(request, 'settings.html', {'locations': locations})
+    from .models import User
+    users = User.objects.exclude(pk=request.user.pk)
+    # Por ahora las ubicaciones son un conjunto de las usadas en incidencias reales
+    locations = Incidencia.objects.values_list('location', flat=True).distinct()
+    return render(request, 'settings.html', {'system_users': users, 'locations': locations})
 
 def analyze_priority_logic(title, description):
     """

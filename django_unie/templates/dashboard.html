@@ -48,29 +48,26 @@
 
         <!-- Estado de Campus -->
         <div class="space-y-4">
-            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Estado de Instalaciones</h2>
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Actividad Reciente</h2>
             <div class="pro-card divide-y divide-slate-100">
-                <div class="p-6 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-800">Edificio A</p>
-                        <p class="text-[10px] text-slate-400">Aulas y Servicios Comunes</p>
+                {% if recent_incidents %}
+                    {% for inc in recent_incidents %}
+                    <div class="p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">{{ inc.title|truncatechars:30 }}</p>
+                            <p class="text-[10px] text-slate-400">{{ inc.location }} · {{ inc.created_at|timesince }} ago</p>
+                        </div>
+                        <span class="flex h-2 w-2 rounded-full 
+                            {% if inc.status == 'OPEN' %}bg-amber-500
+                            {% elif inc.status == 'IN_PROGRESS' %}bg-blue-500
+                            {% else %}bg-emerald-500{% endif %}"></span>
                     </div>
-                    <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                </div>
-                <div class="p-6 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-800">Biblioteca</p>
-                        <p class="text-[10px] text-slate-400">Sala de Estudios y WiFi</p>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-10 text-center text-slate-400 text-[10px] uppercase tracking-widest">
+                        Sin actividad reciente registrada
                     </div>
-                    <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                </div>
-                <div class="p-6 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-800">Laboratorio 3</p>
-                        <p class="text-[10px] text-slate-400">Mantenimiento de Red</p>
-                    </div>
-                    <span class="flex h-2 w-2 rounded-full bg-amber-500"></span>
-                </div>
+                {% endif %}
             </div>
             
             <div class="bg-unie p-8 rounded text-white shadow-lg">
@@ -85,13 +82,11 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const data = [
-            {label: 'TI', value: 40},
-            {label: 'Infraest.', value: 25},
-            {label: 'Mobiliario', value: 15},
-            {label: 'Limpieza', value: 10},
-            {label: 'Académica', value: 10}
-        ];
+        const data = JSON.parse('{{ chart_data_json|safe }}') || [];
+        
+        // Ajustar escala Y si no hay datos o los valores son bajos
+        const maxValue = d3.max(data, d => d.value) || 10;
+        const yDomain = maxValue < 10 ? 10 : maxValue + 5;
 
         const chartContainer = document.getElementById('activity-chart');
         const width = chartContainer.clientWidth - 40;
@@ -111,7 +106,7 @@
 
         const y = d3.scaleLinear()
             .range([height, 0])
-            .domain([0, 50]);
+            .domain([0, yDomain]);
 
         svg.append("g")			
             .attr("class", "grid")

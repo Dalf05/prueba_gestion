@@ -66,27 +66,24 @@
                 </div>
 
                 <div class="divide-y divide-slate-100">
+                    {% for s_user in system_users %}
                     <div class="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-500">G</div>
+                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-500">
+                                {{ s_user.username|slice:":1"|upper }}
+                            </div>
                             <div class="flex flex-col">
-                                <span class="text-sm font-bold text-slate-800">Dr. García</span>
-                                <span class="text-xs text-slate-500">garcia.docente@unie.com</span>
+                                <span class="text-sm font-bold text-slate-800">{{ s_user.username|capfirst }}</span>
+                                <span class="text-xs text-slate-500">{{ s_user.email }}</span>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold text-slate-400 border border-slate-200 px-2 py-0.5 rounded uppercase">Docente</span>
+                        <span class="text-[10px] font-bold text-slate-400 border border-slate-200 px-2 py-0.5 rounded uppercase">{{ s_user.get_role_display }}</span>
                     </div>
-
-                    <div class="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-500">M</div>
-                            <div class="flex flex-col">
-                                <span class="text-sm font-bold text-slate-800">Marta Pérez</span>
-                                <span class="text-xs text-slate-500">m.perez.alumno@unie.com</span>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold text-slate-400 border border-slate-200 px-2 py-0.5 rounded uppercase">Alumno</span>
+                    {% empty %}
+                    <div class="p-10 text-center text-slate-400 text-xs">
+                        No hay otros usuarios registrados en el sistema.
                     </div>
+                    {% endfor %}
                 </div>
             </div>
 
