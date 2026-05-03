@@ -93,20 +93,6 @@
     <div class="app-shell w-full">
         <!-- Sidebar -->
         <aside class="sidebase hidden lg:flex">
-            <div class="p-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white rounded flex items-center justify-center p-1">
-                        <svg viewBox="0 0 100 100" class="w-full h-full" fill="#002147">
-                            <path d="M20,20 L80,20 L80,80 L20,80 Z M40,40 L60,40 L60,60 L40,60 Z" />
-                        </svg>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-bold text-lg tracking-tight leading-none text-white">UNIE</span>
-                        <span class="text-[9px] font-bold tracking-widest text-white/50 uppercase mt-1">UNIVERSID AD</span>
-                    </div>
-                </div>
-            </div>
-
             <nav class="flex-1 mt-4">
                 <div class="section-title">Navegación</div>
                 <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
@@ -117,14 +103,6 @@
                     <i data-lucide="list" class="w-4 h-4"></i>
                     Incidencias
                 </a>
-
-                {% if user.role == 'ADMIN' %}
-                <div class="section-title">Administración</div>
-                <a href="{% url 'settings' %}" class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
-                    <i data-lucide="settings" class="w-4 h-4"></i>
-                    Configuración
-                </a>
-                {% endif %}
             </nav>
 
             <div class="p-6 mt-auto border-t border-white/10">
