@@ -48,70 +48,33 @@ def seed_users(apps, schema_editor):
     admin_user = User.objects.get(username='admin')
     docente_user = User.objects.get(username='docente')
     alumno_user = User.objects.get(username='alumno')
-    tecnico_user = User.objects.get(username='tecnico')
 
     incidencias_data = [
         {
-            'title': 'Fallo proyector Epson Aula 203',
-            'description': 'El proyector muestra una dominante amarilla y parpadea cada pocos minutos. Se ha probado con varios cables HDMI y el problema persiste.',
+            'title': 'Fallo proyector Aula 102',
+            'description': 'El proyector no recibe señal del HDMI.',
             'category': 'TI',
             'priority': 'HIGH',
-            'status': 'IN_PROGRESS',
-            'location': 'Edificio Principal - Planta 2',
-            'created_by': docente_user
-        },
-        {
-            'title': 'Filtración techo pasillo Biblioteca',
-            'description': 'Gotera activa tras las lluvias de anoche. Hay riesgo de que el agua llegue a las estanterías de la sección de Humanidades.',
-            'category': 'INFRAESTRUCTURA',
-            'priority': 'URGENT',
             'status': 'OPEN',
-            'location': 'Edificio Biblioteca - Planta 1',
-            'created_by': admin_user
-        },
-        {
-            'title': 'Silla ergonómica dañada Lab 05',
-            'description': 'El pistón hidráulico no mantiene la altura. El alumno no puede trabajar cómodamente.',
-            'category': 'MOBILIARIO',
-            'priority': 'LOW',
-            'status': 'RESOLVED',
-            'location': 'Laboratorios - Planta Baja',
-            'created_by': alumno_user
-        },
-        {
-            'title': 'Problemas acceso Wi-Fi Campus-Guest',
-            'description': 'Varios alumnos reportan que la red de invitados no redirige al portal cautivo en la zona de la cafetería.',
-            'category': 'TI',
-            'priority': 'MEDIUM',
-            'status': 'OPEN',
-            'location': 'Cafetería / Zonas Comunes',
-            'created_by': alumno_user
-        },
-        {
-            'title': 'Cierre defectuoso puerta Aula 101',
-            'description': 'La cerradura electrónica se queda bloqueada intermitentemente. Esta mañana hubo que avisar a seguridad para entrar.',
-            'category': 'SEGURIDAD',
-            'priority': 'HIGH',
-            'status': 'IN_PROGRESS',
             'location': 'Edificio A - Planta 1',
             'created_by': docente_user
         },
         {
-            'title': 'Error en actas de evaluación trimestral',
-            'description': 'El desplegable de notas no carga para el grupo M2-B. Se ha intentado recargar la página pero da error 500.',
-            'category': 'ACADEMICA',
-            'priority': 'HIGH',
-            'status': 'OPEN',
-            'location': 'Secretaría Virtual',
-            'created_by': docente_user
+            'title': 'Gotera en pasillo biblioteca',
+            'description': 'Hay una filtración de agua cerca de la sección de ingeniería.',
+            'category': 'INFRAESTRUCTURA',
+            'priority': 'URGENT',
+            'status': 'IN_PROGRESS',
+            'location': 'Biblioteca - Planta 0',
+            'created_by': admin_user
         },
         {
-            'title': 'Jabón agotado aseos Planta 0',
-            'description': 'Los dispensadores de los baños masculinos de la entrada están vacíos desde el viernes.',
-            'category': 'LIMPIEZA',
+            'title': 'Silla rota laboratorio 3',
+            'description': 'Una de las sillas ergonómicas tiene la base partida.',
+            'category': 'MOBILIARIO',
             'priority': 'LOW',
             'status': 'OPEN',
-            'location': 'Edificio Principal - Planta Baja',
+            'location': 'Laboratorios - Planta 2',
             'created_by': alumno_user
         }
     ]

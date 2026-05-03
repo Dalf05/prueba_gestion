@@ -119,7 +119,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const data = {{ distribution|safe }};
+        const data = [
+            {label: 'TI', value: 40},
+            {label: 'Infraest.', value: 25},
+            {label: 'Mobiliario', value: 15},
+            {label: 'Limpieza', value: 10},
+            {label: 'Académica', value: 10}
+        ];
 
         const chartContainer = document.getElementById('activity-chart');
         const margin = {top: 20, right: 20, bottom: 40, left: 40};

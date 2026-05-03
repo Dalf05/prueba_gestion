@@ -6,97 +6,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - UNIE Universidad</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,wght@1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --bg: #FFFFFF;
-            --ink: #111827;
-            --line: #E5E7EB;
-            --f-sans: 'Inter', sans-serif;
-            --f-serif: 'Newsreader', serif;
-        }
-        body { font-family: var(--f-sans); color: var(--ink); }
-        .font-serif-italic { font-family: var(--f-serif); font-style: italic; }
-        .micro-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #9CA3AF; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bg-primary { background-color: #002147; }
+        .text-primary { color: #002147; }
     </style>
 </head>
-<body class="bg-white min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <!-- Left: Context -->
-        <div class="hidden lg:block space-y-12">
-            <div>
-                <span class="micro-label">Identity Node</span>
-                <h2 class="text-5xl font-bold tracking-tighter leading-tight mt-4">UNIX PORTAL</h2>
-                <p class="font-serif-italic text-2xl text-slate-400 mt-4 italic">Management & Operational Control</p>
-            </div>
-            
-            <div class="space-y-6 pt-12 border-t border-slate-100 max-w-sm">
-                <div class="flex gap-4">
-                    <span class="font-bold text-xs tabular-nums text-slate-300">01</span>
-                    <p class="text-[13px] leading-relaxed text-slate-500">Secure entry point for campus technical staff and academic operators.</p>
-                </div>
-                <div class="flex gap-4">
-                    <span class="font-bold text-xs tabular-nums text-slate-300">02</span>
-                    <p class="text-[13px] leading-relaxed text-slate-500">Real-time incident indexing and infrastructure state monitoring.</p>
+<body class="bg-white h-screen flex items-stretch overflow-hidden">
+    <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+        <!-- Left Side: Visual/Branding -->
+        <div class="relative hidden lg:block overflow-hidden h-full">
+            <img 
+                src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80" 
+                alt="Campus UNIE" 
+                class="absolute inset-0 w-full h-full object-cover"
+                referrerpolicy="no-referrer"
+            />
+            <div class="absolute inset-0 bg-black/30"></div>
+            <div class="absolute inset-0 flex flex-col justify-end p-20 text-white">
+                <div class="mb-8 bg-slate-900/60 backdrop-blur-md p-10 rounded-3xl border border-white/10 max-w-2xl">
+                    <div class="w-16 h-1 bg-white mb-6"></div>
+                    <h2 class="text-6xl font-display font-extrabold mb-6 leading-tight tracking-tighter">Tu futuro,<br/>nuestra prioridad.</h2>
+                    <p class="text-white/90 font-medium text-lg">Accede al portal académico para gestionar incidencias y servicios del campus con la máxima eficiencia.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Right: Form Area -->
-        <div class="w-full max-w-md mx-auto">
+        <!-- Right Side: Form -->
+        <div class="p-12 lg:p-24 flex flex-col justify-center bg-white h-full overflow-y-auto lg:overflow-hidden">
             <div class="mb-12">
-                <h1 class="text-2xl font-bold tracking-tight">System Access</h1>
-                <p class="text-sm text-slate-400 mt-2">Enter credentials to initialize session</p>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="flex flex-col justify-center">
+                        <div class="flex items-center gap-2">
+                            <span class="font-black text-3xl text-primary leading-none">unie</span>
+                            <div class="w-8 h-8 relative">
+                                <svg viewBox="0 0 100 100" class="w-full h-full" fill="#002147">
+                                    <g transform="translate(50,50)">
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(0)" />
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(60)" />
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(120)" />
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(180)" />
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(240)" />
+                                        <rect x="4" y="-45" width="14" height="42" transform="rotate(300)" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold tracking-[0.2em] leading-none mt-1 text-primary/70 uppercase">
+                            Universidad
+                        </span>
+                    </div>
+                </div>
+                <h1 class="text-3xl font-display font-extrabold text-slate-900 mb-2">Bienvenido de nuevo</h1>
+                <p class="text-slate-400 font-medium">Introduce tus credenciales para continuar</p>
             </div>
 
             {% if form.errors %}
-            <div class="mb-8 p-4 border border-rose-100 bg-rose-50/50 rounded-lg">
-                <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest block mb-1">Access Failure</span>
-                <p class="text-xs text-rose-800 font-medium">The information provided does not match our records.</p>
+            <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl">
+                <p class="text-xs font-bold text-red-600 uppercase tracking-widest mb-1">Error de Acceso</p>
+                <p class="text-sm text-red-500 font-medium">Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.</p>
             </div>
             {% endif %}
 
-            <form method="post" class="space-y-8">
+            <form method="post" class="space-y-6">
                 {% csrf_token %}
-                <div class="space-y-2">
-                    <label class="micro-label ml-1">Operator Identifier</label>
-                    <input 
-                        type="text" 
-                        name="username"
-                        required
-                        class="w-full bg-slate-50 border border-slate-100 rounded-lg py-3 px-4 outline-none focus:bg-white focus:border-slate-300 transition-all text-sm font-medium text-slate-900 placeholder:text-slate-300"
-                        placeholder="username"
-                    />
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Usuario</label>
+                    <div class="relative group">
+                        <i data-lucide="user" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                        <input 
+                            type="text" 
+                            name="username"
+                            required
+                            class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-5 pl-16 pr-6 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 focus:bg-white transition-all font-medium text-slate-700 placeholder:text-slate-300"
+                            placeholder="nombre.apellido"
+                        />
+                    </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="micro-label ml-1">Passkey Protocol</label>
-                    <input 
-                        type="password" 
-                        name="password"
-                        required
-                        class="w-full bg-slate-50 border border-slate-100 rounded-lg py-3 px-4 outline-none focus:bg-white focus:border-slate-300 transition-all text-sm font-medium text-slate-900 placeholder:text-slate-300"
-                        placeholder="••••••••"
-                    />
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Contraseña</label>
+                    <div class="relative group">
+                        <i data-lucide="lock" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-primary transition-colors"></i>
+                        <input 
+                            type="password" 
+                            name="password"
+                            required
+                            class="w-full bg-slate-50 border border-slate-100 rounded-2xl py-5 pl-16 pr-6 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 focus:bg-white transition-all font-medium text-slate-700 placeholder:text-slate-300"
+                            placeholder="••••••••"
+                        />
+                    </div>
                 </div>
 
                 <button 
                     type="submit"
-                    class="w-full bg-black text-white rounded-lg py-3 font-bold text-xs uppercase tracking-widest hover:bg-slate-800 active:scale-[0.98] transition-all"
+                    class="w-full bg-primary text-white rounded-2xl py-5 font-bold text-lg shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-4 uppercase tracking-widest text-sm"
                 >
-                    Authenticate
+                    Iniciar Sesión
                 </button>
             </form>
 
-            <div class="mt-16 pt-8 border-t border-slate-100 flex flex-col gap-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] text-slate-400 font-bold uppercase">System Status</span>
-                    <div class="flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span class="text-[10px] text-emerald-600 font-bold uppercase">Online</span>
-                    </div>
-                </div>
+            <div class="mt-12 pt-8 border-t border-slate-50 flex justify-between items-center">
+                <p class="text-xs text-slate-400 font-medium">¿Problemas con el acceso?</p>
+                <a href="#" class="text-xs font-bold text-primary hover:underline">Contactar con Soporte</a>
             </div>
         </div>
     </div>
