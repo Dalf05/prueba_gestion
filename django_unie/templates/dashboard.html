@@ -4,114 +4,80 @@
 {% block header_subtitle %}ESTADÍSTICAS Y RENDIMIENTO CAMPUS{% endblock %}
 
 {% block content %}
-<div class="space-y-12 animate-in fade-in duration-500">
-    <!-- Summary Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-100">
-        <div>
-            <span class="micro-label">Status Report</span>
-            <h2 class="text-3xl font-bold tracking-tight text-slate-900 mt-2">Active Performance</h2>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[10px] font-bold uppercase tracking-wider">All Systems Operational</span>
+<div class="space-y-8 animate-in fade-in duration-500">
+    <!-- Métricas Principales -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="pro-card p-6 border-l-4 border-unie">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Incidencias</p>
+            <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-slate-800">{{ total_count }}</span>
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-slate-300"></i>
             </div>
-            <div class="text-[10px] font-bold text-slate-400">LAST SYNC: {% now "H:i" %}</div>
         </div>
-    </div>
-
-    <!-- Key Metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 pro-card overflow-hidden">
-        <div class="p-8 border-r border-slate-100">
-            <span class="col-header block mb-4">Incidencias Totales</span>
-            <div class="flex items-baseline gap-2">
-                <span class="text-4xl font-bold tracking-tighter">{{ total_count }}</span>
-                <span class="text-[10px] font-bold text-emerald-500">+4%</span>
+        <div class="pro-card p-6 border-l-4 border-amber-500">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pendientes</p>
+            <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-slate-800">{{ open_count }}</span>
+                <i data-lucide="clock" class="w-5 h-5 text-amber-500"></i>
             </div>
-            <p class="text-[11px] text-slate-400 mt-2">Total volume registered</p>
         </div>
-        <div class="p-8 border-r border-slate-100">
-            <span class="col-header block mb-4">Pendientes</span>
-            <div class="flex items-baseline gap-2">
-                <span class="text-4xl font-bold tracking-tighter">{{ open_count }}</span>
-                <span class="w-2 h-2 rounded-full bg-amber-400 mb-1"></span>
+        <div class="pro-card p-6 border-l-4 border-emerald-500">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Cumplimiento SLA</p>
+            <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-slate-800">{{ sla_compliance }}%</span>
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-500"></i>
             </div>
-            <p class="text-[11px] text-slate-400 mt-2">Requiring immediate attention</p>
         </div>
-        <div class="p-8 border-r border-slate-100">
-            <span class="col-header block mb-4">SLA Compliance</span>
-            <div class="flex items-baseline gap-2">
-                <span class="text-4xl font-bold tracking-tighter">{{ sla_compliance }}%</span>
+        <div class="pro-card p-6 border-l-4 border-unie">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tiempo Resol. Promedio</p>
+            <div class="flex items-baseline gap-1">
+                <span class="text-3xl font-bold text-slate-800">{{ avg_res_time }}</span>
+                <span class="text-sm font-medium text-slate-400">horas</span>
             </div>
-            <p class="text-[11px] text-slate-400 mt-2">Service level target: 98%</p>
-        </div>
-        <div class="p-8 bg-slate-50/50">
-            <span class="col-header block mb-4">Avg Resol. Time</span>
-            <div class="flex items-baseline gap-2">
-                <span class="text-4xl font-bold tracking-tighter">{{ avg_res_time }}</span>
-                <span class="text-sm font-semibold text-slate-400">hrs</span>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-2">Efficiency metric</p>
         </div>
     </div>
 
-    <!-- Main View: Grid & Distribution -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <!-- Distribution Matrix -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Activity Distribution</h3>
-                <button class="text-[10px] font-bold text-slate-400 hover:text-black transition-colors uppercase">View Report</button>
-            </div>
-            <div class="pro-card p-10 h-[400px] flex flex-col items-center justify-center relative overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Gráfico de Distribución -->
+        <div class="lg:col-span-2 space-y-4">
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Distribución por Categoría</h2>
+            <div class="pro-card p-8 h-[400px]">
                 <div id="activity-chart" class="w-full h-full"></div>
-                <!-- Technical Overlay -->
-                <div class="absolute bottom-6 left-6 flex items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-black"></span>
-                        <span class="micro-label">Main Volume</span>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- System Inventory / Recent Events -->
-        <div class="space-y-6">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Node Status</h3>
+        <!-- Estado de Campus -->
+        <div class="space-y-4">
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Estado de Instalaciones</h2>
             <div class="pro-card divide-y divide-slate-100">
-                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors">
-                    <div class="flex flex-col">
-                        <span class="text-xs font-bold">Edificio A</span>
-                        <span class="text-[10px] text-slate-400">Planta 1, Planta 2</span>
+                <div class="p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Edificio A</p>
+                        <p class="text-[10px] text-slate-400">Aulas y Servicios Comunes</p>
                     </div>
-                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
                 </div>
-                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors">
-                    <div class="flex flex-col">
-                        <span class="text-xs font-bold">Biblioteca</span>
-                        <span class="text-[10px] text-slate-400">Red inalámbrica</span>
+                <div class="p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Biblioteca</p>
+                        <p class="text-[10px] text-slate-400">Sala de Estudios y WiFi</p>
                     </div>
-                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                    <span class="flex h-2 w-2 rounded-full bg-emerald-500"></span>
                 </div>
-                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors text-slate-400">
-                    <div class="flex flex-col">
-                        <span class="text-xs font-bold">Laboratorio 3</span>
-                        <span class="text-[10px]">Mantenimiento programado</span>
+                <div class="p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Laboratorio 3</p>
+                        <p class="text-[10px] text-slate-400">Mantenimiento de Red</p>
                     </div>
-                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                    <span class="flex h-2 w-2 rounded-full bg-amber-500"></span>
                 </div>
             </div>
-
-            <!-- Promotion Card / Utility -->
-            <div class="bg-black p-8 rounded-xl text-white">
-                <span class="micro-label text-slate-500">Security Node</span>
-                <h4 class="text-xl font-bold mt-4">2FA Enforced</h4>
-                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-                    Administrative accounts require valid token authentication for all write operations.
+            
+            <div class="bg-unie p-8 rounded text-white shadow-lg">
+                <h3 class="text-xs font-bold uppercase tracking-widest border-b border-white/20 pb-4 mb-4">Aviso Institucional</h3>
+                <p class="text-xs text-white/80 leading-relaxed font-light">
+                    Portal de gestión académica y operativa para uso exclusivo del personal de UNIE Universidad. Por favor, reporte cualquier anomalía técnica para su pronta resolución.
                 </p>
-                <button class="mt-6 text-[10px] font-bold uppercase tracking-widest border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all">
-                    System Logs
-                </button>
             </div>
         </div>
     </div>
@@ -128,50 +94,39 @@
         ];
 
         const chartContainer = document.getElementById('activity-chart');
-        const margin = {top: 20, right: 20, bottom: 40, left: 40};
-        const width = chartContainer.clientWidth - margin.left - margin.right;
-        const height = chartContainer.clientHeight - margin.top - margin.bottom;
+        const width = chartContainer.clientWidth - 40;
+        const height = chartContainer.clientHeight - 60;
 
         const svg = d3.select("#activity-chart")
             .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", width + 40)
+            .attr("height", height + 60)
             .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(20, 20)`);
 
         const x = d3.scaleBand()
             .range([0, width])
-            .padding(0.6)
+            .padding(0.5)
             .domain(data.map(d => d.label));
 
         const y = d3.scaleLinear()
             .range([height, 0])
             .domain([0, 50]);
 
-        // Y Grid - Technical feeling
         svg.append("g")			
             .attr("class", "grid")
-            .attr("stroke", "#F1F5F9")
-            .attr("stroke-width", 1)
-            .call(d3.axisLeft(y)
-                .ticks(5)
-                .tickSize(-width)
-                .tickFormat("")
-            )
+            .attr("stroke", "#F3F4F6")
+            .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(""))
             .call(g => g.select(".domain").remove());
 
-        // X Axis - Serif Italic for nodes
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickSize(0).tickPadding(15))
-            .call(g => g.select(".domain").remove())
             .selectAll("text")
             .style("font-size", "10px")
-            .style("font-family", "Newsreader")
-            .style("font-style", "italic")
+            .style("font-weight", "600")
             .style("fill", "#64748B");
 
-        // Bars - Minimal monochrome
         svg.selectAll(".bar")
             .data(data)
             .enter().append("rect")
@@ -180,7 +135,8 @@
             .attr("width", x.bandwidth())
             .attr("y", height)
             .attr("height", 0)
-            .attr("fill", "#111827")
+            .attr("fill", "#002147")
+            .attr("rx", 2)
             .transition()
             .duration(800)
             .attr("y", d => y(d.value))
