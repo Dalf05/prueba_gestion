@@ -4,129 +4,114 @@
 {% block header_subtitle %}LISTADO MAESTRO DE INCIDENCIAS CAMPUS{% endblock %}
 
 {% block content %}
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <!-- Filters & Actions -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-10 animate-in fade-in duration-500">
+    <!-- Header Controls -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-center gap-4">
             <div class="relative group">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors"></i>
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
                 <input 
                     type="text" 
-                    placeholder="Buscar por ID, asunto o descripción..." 
-                    class="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 w-full md:w-80 font-medium transition-all"
+                    placeholder="Search node, ID or user..." 
+                    class="pl-10 pr-6 py-2.5 bg-slate-50 border border-slate-100 rounded-lg text-[11px] focus:outline-none focus:bg-white focus:border-slate-300 w-full md:w-72 font-medium transition-all"
                 />
             </div>
-            <button class="p-3 bg-white border border-slate-200 rounded-2xl text-slate-600 hover:bg-slate-50 transition-colors">
-                <i data-lucide="filter" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center p-1 bg-slate-100 rounded-lg">
+                <button class="px-3 py-1.5 bg-white shadow-sm rounded-md text-[10px] font-bold uppercase tracking-tight text-slate-900">Active</button>
+                <button class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-tight text-slate-400 hover:text-slate-600 transition-colors">Archived</button>
+            </div>
         </div>
-        
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-2">Filtros:</span>
-            <button class="px-4 py-2 bg-primary text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Todas</button>
-            <button class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50">Abiertas</button>
-            <button class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50">En Proceso</button>
-            <button class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-50">Resueltas</button>
+
+        <div class="flex items-center gap-3">
+            <span class="micro-label">Sort by</span>
+            <select class="bg-transparent border-none text-[11px] font-bold uppercase text-slate-900 focus:ring-0 cursor-pointer">
+                <option>Newest First</option>
+                <option>Priority High</option>
+            </select>
         </div>
     </div>
 
-    <!-- Main Table Card -->
-    <div class="glass-card rounded-[2rem] overflow-hidden">
+    <!-- Data Table -->
+    <div class="pro-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="border-b border-slate-100 bg-slate-50/30">
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Incidencia / ID</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Estado</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Prioridad</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ubicación</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reportado por</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                        <th class="px-8 py-4 col-header">Ticket Reference</th>
+                        <th class="px-8 py-4 col-header">Classification</th>
+                        <th class="px-8 py-4 col-header">Intensity</th>
+                        <th class="px-8 py-4 col-header">Location Node</th>
+                        <th class="px-8 py-4 col-header">Operator</th>
+                        <th class="px-8 py-4 col-header text-right">State</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     {% for incident in incidencias %}
-                    <tr class="hover:bg-slate-50/50 transition-all group">
+                    <tr class="hover:bg-slate-50/40 transition-colors group">
                         <td class="px-8 py-6">
                             <div class="flex flex-col">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-mono font-bold text-primary bg-primary/5 px-2 py-0.5 rounded">#{{ incident.id }}</span>
-                                    <span class="font-bold text-slate-900 text-sm group-hover:text-primary transition-colors">{{ incident.title }}</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="font-mono text-[10px] tabular-nums text-slate-400">#{{ incident.id|stringformat:"04d" }}</span>
+                                    <span class="font-bold text-slate-900 text-sm tracking-tight">{{ incident.title }}</span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-1 truncate max-w-[240px]">{{ incident.description }}</span>
+                                <span class="text-[11px] text-slate-500 mt-1 line-clamp-1 max-w-sm">{{ incident.description }}</span>
                             </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span class="micro-label opacity-70">{{ incident.get_category_display }}</span>
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full {% if incident.status == 'OPEN' %}bg-amber-500 animate-pulse{% elif incident.status == 'IN_PROGRESS' %}bg-blue-500{% else %}bg-emerald-500{% endif %}"></div>
-                                <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{{ incident.get_status_display }}</span>
+                                <div class="w-1.5 h-1.5 rounded-full 
+                                    {% if incident.priority == 'URGENT' %}bg-rose-500
+                                    {% elif incident.priority == 'HIGH' %}bg-amber-500
+                                    {% elif incident.priority == 'MEDIUM' %}bg-blue-500
+                                    {% else %}bg-slate-300{% endif %}">
+                                </div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                                    {{ incident.get_priority_display }}
+                                </span>
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest
-                                {% if incident.priority == 'URGENT' %}bg-red-50 text-red-600 border border-red-100
-                                {% elif incident.priority == 'HIGH' %}bg-orange-50 text-orange-600 border border-orange-100
-                                {% elif incident.priority == 'MEDIUM' %}bg-blue-50 text-blue-600 border border-blue-100
-                                {% else %}bg-slate-50 text-slate-600 border border-slate-100{% endif %}">
-                                {{ incident.get_priority_display }}
-                            </span>
-                        </td>
-                        <td class="px-8 py-6">
-                            <div class="flex items-center gap-2 text-slate-500 text-[10px] font-bold uppercase tracking-tight">
-                                <i data-lucide="map-pin" class="w-3 h-3 text-slate-300"></i>
-                                {{ incident.location }}
-                            </div>
+                            <span class="text-[11px] font-medium text-slate-600">{{ incident.location }}</span>
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500 border border-slate-200">
+                                <div class="w-7 h-7 rounded bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
                                     {{ incident.created_by.username|slice:":1"|upper }}
                                 </div>
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] font-bold text-slate-700 uppercase">{{ incident.created_by.username }}</span>
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase">{{ incident.created_at|date:"d M, H:i" }}</span>
+                                    <span class="text-[11px] font-bold text-slate-900">{{ incident.created_by.username }}</span>
+                                    <span class="text-[9px] text-slate-400 font-medium uppercase tracking-tighter">{{ incident.created_at|date:"d M Y" }}</span>
                                 </div>
                             </div>
                         </td>
                         <td class="px-8 py-6 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                {% if user.role == 'ADMIN' or user.role == 'TECNICO' %}
-                                <form action="{% url 'update_status' incident.pk %}" method="post" class="relative">
-                                    {% csrf_token %}
-                                    <select name="status" onchange="this.form.submit()" class="appearance-none bg-white border border-slate-200 rounded-xl text-[9px] font-bold uppercase pl-3 pr-8 py-2 outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 cursor-pointer transition-all">
-                                        <option value="OPEN" {% if incident.status == 'OPEN' %}selected{% endif %}>Abierta</option>
-                                        <option value="IN_PROGRESS" {% if incident.status == 'IN_PROGRESS' %}selected{% endif %}>En Proceso</option>
-                                        <option value="RESOLVED" {% if incident.status == 'RESOLVED' %}selected{% endif %}>Resuelta</option>
-                                        <option value="CLOSED" {% if incident.status == 'CLOSED' %}selected{% endif %}>Cerrada</option>
-                                    </select>
-                                    <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none"></i>
-                                </form>
-                                {% elif incident.created_by == user and incident.status != 'CLOSED' %}
-                                <form action="{% url 'update_status' incident.pk %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="status" value="CLOSED">
-                                    <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors" title="Cerrar Incidencia">
-                                        <i data-lucide="x-circle" class="w-5 h-5"></i>
-                                    </button>
-                                </form>
-                                {% endif %}
-                                <button class="p-2 text-slate-400 hover:bg-slate-50 rounded-xl transition-colors">
-                                    <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                                </button>
-                            </div>
+                            {% if user.role == 'ADMIN' or user.role == 'TECNICO' %}
+                            <form action="{% url 'update_status' incident.pk %}" method="post" class="inline-block relative">
+                                {% csrf_token %}
+                                <select name="status" onchange="this.form.submit()" class="appearance-none bg-slate-50 border border-slate-100 rounded-md text-[10px] font-bold uppercase pl-3 pr-8 py-1.5 outline-none hover:bg-white focus:border-slate-300 cursor-pointer transition-all">
+                                    <option value="OPEN" {% if incident.status == 'OPEN' %}selected{% endif %}>Open</option>
+                                    <option value="IN_PROGRESS" {% if incident.status == 'IN_PROGRESS' %}selected{% endif %}>Processing</option>
+                                    <option value="RESOLVED" {% if incident.status == 'RESOLVED' %}selected{% endif %}>Resolved</option>
+                                    <option value="CLOSED" {% if incident.status == 'CLOSED' %}selected{% endif %}>Terminated</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none"></i>
+                            </form>
+                            {% else %}
+                                <span class="px-2 py-1 bg-slate-100 rounded text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                                    {{ incident.get_status_display }}
+                                </span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="px-8 py-20 text-center">
-                            <div class="flex flex-col items-center gap-4">
-                                <div class="w-16 h-16 rounded-3xl bg-slate-50 flex items-center justify-center text-slate-200">
-                                    <i data-lucide="clipboard-list" class="w-8 h-8"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-900 uppercase tracking-widest">No hay registros</p>
-                                    <p class="text-xs text-slate-400 mt-1">No se han encontrado incidencias en el sistema.</p>
-                                </div>
+                        <td colspan="6" class="px-8 py-24 text-center">
+                            <div class="flex flex-col items-center">
+                                <i data-lucide="inbox" class="w-10 h-10 text-slate-200 mb-4"></i>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">No nodes found in current buffer</p>
                             </div>
                         </td>
                     </tr>
@@ -135,14 +120,17 @@
             </table>
         </div>
         
-        <!-- Pagination Placeholder -->
-        <div class="px-8 py-6 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mostrando {{ incidencias|length }} resultados</span>
+        <!-- Functional Footer -->
+        <div class="px-8 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <span class="micro-label">Buffer: {{ incidencias|length }} units</span>
+                <span class="micro-label">Node: Production-01</span>
+            </div>
             <div class="flex items-center gap-2">
-                <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-400 cursor-not-allowed">
+                <button class="p-1.5 border border-slate-200 rounded text-slate-300">
                     <i data-lucide="chevron-left" class="w-4 h-4"></i>
                 </button>
-                <button class="p-2 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50">
+                <button class="p-1.5 border border-slate-200 rounded text-slate-900 bg-white">
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </button>
             </div>

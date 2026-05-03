@@ -4,144 +4,114 @@
 {% block header_subtitle %}ESTADÍSTICAS Y RENDIMIENTO CAMPUS{% endblock %}
 
 {% block content %}
-<div class="space-y-8 animate-in fade-in duration-700">
-    <!-- Header Stats (Bento Grid) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                </div>
-                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">+12%</span>
-            </div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Incidencias</p>
-            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ total_count }}</h3>
-            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
-                <i data-lucide="bar-chart-3" class="w-24 h-24"></i>
-            </div>
+<div class="space-y-12 animate-in fade-in duration-500">
+    <!-- Summary Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-100">
+        <div>
+            <span class="micro-label">Status Report</span>
+            <h2 class="text-3xl font-bold tracking-tight text-slate-900 mt-2">Active Performance</h2>
         </div>
-
-        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-                    <i data-lucide="clock" class="w-5 h-5"></i>
-                </div>
-                <span class="text-[10px] font-bold text-amber-500 bg-amber-50 px-2 py-1 rounded-lg">Activas</span>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">All Systems Operational</span>
             </div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pendientes</p>
-            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ open_count }}</h3>
-            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
-                <i data-lucide="clock" class="w-24 h-24"></i>
-            </div>
-        </div>
-
-        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
-                    <i data-lucide="zap" class="w-5 h-5"></i>
-                </div>
-            </div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tiempo Resol.</p>
-            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ avg_res_time }}h</h3>
-            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
-                <i data-lucide="zap" class="w-24 h-24"></i>
-            </div>
-        </div>
-
-        <div class="glass-card p-6 rounded-3xl relative overflow-hidden group">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                </div>
-                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">Excelente</span>
-            </div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">SLA Compliance</p>
-            <h3 class="text-3xl font-display font-extrabold text-slate-900 mt-1 font-mono">{{ sla_compliance }}%</h3>
-            <div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
-                <i data-lucide="shield-check" class="w-24 h-24"></i>
-            </div>
+            <div class="text-[10px] font-bold text-slate-400">LAST SYNC: {% now "H:i" %}</div>
         </div>
     </div>
 
-    <!-- Main Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Activity Chart -->
-        <div class="lg:col-span-2 glass-card p-8 rounded-[2rem]">
-            <div class="flex items-center justify-between mb-10">
-                <div>
-                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest">Actividad del Campus</h4>
-                    <p class="text-xs text-slate-400 mt-1">Volumen de incidencias por categoría (Tiempo Real)</p>
-                </div>
-                <div class="flex items-center gap-4">
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 pro-card overflow-hidden">
+        <div class="p-8 border-r border-slate-100">
+            <span class="col-header block mb-4">Incidencias Totales</span>
+            <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-bold tracking-tighter">{{ total_count }}</span>
+                <span class="text-[10px] font-bold text-emerald-500">+4%</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Total volume registered</p>
+        </div>
+        <div class="p-8 border-r border-slate-100">
+            <span class="col-header block mb-4">Pendientes</span>
+            <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-bold tracking-tighter">{{ open_count }}</span>
+                <span class="w-2 h-2 rounded-full bg-amber-400 mb-1"></span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Requiring immediate attention</p>
+        </div>
+        <div class="p-8 border-r border-slate-100">
+            <span class="col-header block mb-4">SLA Compliance</span>
+            <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-bold tracking-tighter">{{ sla_compliance }}%</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Service level target: 98%</p>
+        </div>
+        <div class="p-8 bg-slate-50/50">
+            <span class="col-header block mb-4">Avg Resol. Time</span>
+            <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-bold tracking-tighter">{{ avg_res_time }}</span>
+                <span class="text-sm font-semibold text-slate-400">hrs</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">Efficiency metric</p>
+        </div>
+    </div>
+
+    <!-- Main View: Grid & Distribution -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <!-- Distribution Matrix -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Activity Distribution</h3>
+                <button class="text-[10px] font-bold text-slate-400 hover:text-black transition-colors uppercase">View Report</button>
+            </div>
+            <div class="pro-card p-10 h-[400px] flex flex-col items-center justify-center relative overflow-hidden">
+                <div id="activity-chart" class="w-full h-full"></div>
+                <!-- Technical Overlay -->
+                <div class="absolute bottom-6 left-6 flex items-center gap-4">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-primary"></span>
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Reportes</span>
+                        <span class="w-2 h-2 bg-black"></span>
+                        <span class="micro-label">Main Volume</span>
                     </div>
                 </div>
             </div>
-            
-            <div id="activity-chart" class="w-full h-72"></div>
         </div>
 
-        <!-- Right Column -->
-        <div class="space-y-8">
-            <!-- System Status -->
-            <div class="bg-primary p-8 rounded-[2rem] text-white relative overflow-hidden group">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                            <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
-                        </div>
-                        <span class="text-[10px] font-bold text-white/60 uppercase tracking-widest">Estado del Sistema</span>
+        <!-- System Inventory / Recent Events -->
+        <div class="space-y-6">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Node Status</h3>
+            <div class="pro-card divide-y divide-slate-100">
+                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold">Edificio A</span>
+                        <span class="text-[10px] text-slate-400">Planta 1, Planta 2</span>
                     </div>
-                    <h4 class="text-3xl font-display font-bold">Operativo</h4>
-                    <p class="text-sm text-white/60 mt-2">Todos los servicios del campus están funcionando correctamente.</p>
-                    
-                    <div class="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                            <span class="text-[10px] font-bold uppercase tracking-widest">Live Sync</span>
-                        </div>
-                        <span class="text-[10px] font-bold text-white/40">v2.0.4</span>
-                    </div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                 </div>
-                <div class="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform duration-700">
-                    <i data-lucide="globe" class="w-48 h-48"></i>
+                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold">Biblioteca</span>
+                        <span class="text-[10px] text-slate-400">Red inalámbrica</span>
+                    </div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                </div>
+                <div class="p-6 flex items-center justify-between group cursor-pointer hover:bg-slate-50 transition-colors text-slate-400">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold">Laboratorio 3</span>
+                        <span class="text-[10px]">Mantenimiento programado</span>
+                    </div>
+                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
                 </div>
             </div>
 
-            <!-- Distribution -->
-            <div class="glass-card p-8 rounded-[2rem]">
-                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">Carga por Categoría</h4>
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                            <span class="text-slate-600">TI / Tecnología</span>
-                            <span class="text-primary">45%</span>
-                        </div>
-                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-primary rounded-full" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                            <span class="text-slate-600">Infraestructura</span>
-                            <span class="text-amber-500">30%</span>
-                        </div>
-                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-amber-500 rounded-full" style="width: 30%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-[10px] font-bold uppercase mb-2">
-                            <span class="text-slate-600">Mobiliario</span>
-                            <span class="text-indigo-500">25%</span>
-                        </div>
-                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-500 rounded-full" style="width: 25%"></div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Promotion Card / Utility -->
+            <div class="bg-black p-8 rounded-xl text-white">
+                <span class="micro-label text-slate-500">Security Node</span>
+                <h4 class="text-xl font-bold mt-4">2FA Enforced</h4>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Administrative accounts require valid token authentication for all write operations.
+                </p>
+                <button class="mt-6 text-[10px] font-bold uppercase tracking-widest border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all">
+                    System Logs
+                </button>
             </div>
         </div>
     </div>
@@ -149,13 +119,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const data = [
-            {label: 'TI', value: 40, color: '#002147'},
-            {label: 'Infra', value: 25, color: '#F59E0B'},
-            {label: 'Mobiliario', value: 15, color: '#6366F1'},
-            {label: 'Limpieza', value: 10, color: '#10B981'},
-            {label: 'Seguridad', value: 10, color: '#EF4444'}
-        ];
+        const data = {{ distribution|safe }};
 
         const chartContainer = document.getElementById('activity-chart');
         const margin = {top: 20, right: 20, bottom: 40, left: 40};
@@ -171,14 +135,14 @@
 
         const x = d3.scaleBand()
             .range([0, width])
-            .padding(0.4)
+            .padding(0.6)
             .domain(data.map(d => d.label));
 
         const y = d3.scaleLinear()
             .range([height, 0])
             .domain([0, 50]);
 
-        // Grid lines
+        // Y Grid - Technical feeling
         svg.append("g")			
             .attr("class", "grid")
             .attr("stroke", "#F1F5F9")
@@ -190,18 +154,18 @@
             )
             .call(g => g.select(".domain").remove());
 
-        // X Axis
+        // X Axis - Serif Italic for nodes
         svg.append("g")
             .attr("transform", `translate(0,${height})`)
             .call(d3.axisBottom(x).tickSize(0).tickPadding(15))
             .call(g => g.select(".domain").remove())
             .selectAll("text")
             .style("font-size", "10px")
-            .style("font-weight", "700")
-            .style("text-transform", "uppercase")
-            .style("fill", "#94A3B8");
+            .style("font-family", "Newsreader")
+            .style("font-style", "italic")
+            .style("fill", "#64748B");
 
-        // Bars
+        // Bars - Minimal monochrome
         svg.selectAll(".bar")
             .data(data)
             .enter().append("rect")
@@ -210,10 +174,9 @@
             .attr("width", x.bandwidth())
             .attr("y", height)
             .attr("height", 0)
-            .attr("rx", 8)
-            .attr("fill", d => d.color)
+            .attr("fill", "#111827")
             .transition()
-            .duration(1000)
+            .duration(800)
             .attr("y", d => y(d.value))
             .attr("height", d => height - y(d.value));
             
