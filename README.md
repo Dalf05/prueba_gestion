@@ -1,48 +1,68 @@
-# UNIE Universidad - Portal de Gestión (Django Version)
+# PROYECTO FINAL: Sistema de Gestión de Incidencias UNIE
 
-Esta es la versión completa en Django y Python del portal de gestión de incidencias, diseñada para ser idéntica en funcionalidad y estética a la versión de React.
+¡Hola! Este es el código de mi proyecto para la universidad. Es un sistema para que los alumnos y profes puedan reportar cosas que se rompen en el campus (como una bombilla fundida o que no funciona el WiFi) y que los del equipo técnico lo puedan arreglar.
 
-## Requisitos Previos
+He intentado que sea limpio y fácil de usar, usando **Django** para toda la parte de atrás (servidor/base de datos) y **Tailwind CSS** para que la web se vea moderna.
 
-- Python 3.8 o superior instalado.
-- Pip (gestor de paquetes de Python).
+---
 
-## Pasos para la Instalación Local
+## 📂 ¿Cómo está organizado el código? (Estructura)
 
-1. **Instalar Dependencias:**
-   Abre una terminal en la carpeta raíz del proyecto y ejecuta:
-   ```bash
-   pip install -r requirements.txt
-   ```
+He repartido los archivos de forma que cada cosa tenga su sitio, como nos enseñaron en clase:
 
-2. **Preparar la Base de Datos:**
-   Ejecuta las migraciones para crear las tablas necesarias:
-   ```bash
-   python manage.py makemigrations gestion
-   python manage.py migrate
-   ```
+*   **/proyecto/**: Aquí están los "ajustes maestros" de la web.
+    *   `settings.py`: Donde configuro la base de datos (SQLite), las apps que uso y los permisos.
+    *   `urls.py`: El mapa principal de rutas de la web.
+*   **/gestion/**: Esta es la carpeta más importante. Es donde está toda la "chicha" de la aplicación.
+    *   `models.py`: Aquí diseño las tablas de la base de datos (Usuario, Incidencia, Comentario).
+    *   `views.py`: Aquí está la lógica. Lo que pasa cuando clicas un botón o envías un formulario.
+    *   `urls.py`: Las rutas específicas de las páginas de gestión.
+    *   **/templates/**: Todos los archivos HTML de la web.
+    *   **/migrations/**: Archivos que Django crea automáticamente para montar la base de datos.
+*   **/static/**: Para guardar fotos o logos (aunque la mayoría de iconos los cargo por enlace).
+*   `manage.py`: El mando a distancia para arrancar el servidor o crear tablas.
+*   `requirements.txt`: La lista de librerías de Python necesarias para que esto arranque.
 
-3. **Crear Usuario Administrador:**
-   Para poder acceder al portal, necesitas una cuenta. Crea un superusuario ejecutando:
-   ```bash
-   python manage.py createsuperuser
-   ```
-   *Nota: Sigue las instrucciones en pantalla. Una vez creado, entra en el panel de administración (`/admin`) para asignarte el rol de 'ADMIN' en tu perfil de usuario, ya que por defecto Django no asigna el rol personalizado.*
+---
 
-4. **Iniciar el Servidor:**
-   Lanza el servidor de desarrollo:
-   ```bash
-   python manage.py runserver
-   ```
+## 🛠️ ¿Cómo se usa esto? (Instalación)
 
-5. **Acceder a la Aplicación:**
-   Abre tu navegador en: `http://127.0.0.1:8000/`
+Si te has bajado el código y quieres probarlo en tu ordenador:
 
-## Características Implementadas
+1.  **Instala las librerías:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-- **Interfaz Corporativa:** Diseño basado en Tailwind CSS con los colores y tipografía de UNIE.
-- **Sistema de Roles:** Lógica diferenciada para Alumnos, Docentes, Técnicos y Administradores.
-- **Dashboard con KPIs:** Visualización de estadísticas en tiempo real.
-- **Gestión de Incidencias:** Listado maestro y formulario de creación con análisis de prioridad.
-- **Pestaña de Configuración:** Panel exclusivo para administradores (Gestión de usuarios y campus).
-- **Imágenes Reales:** Integración con Unsplash para una estética profesional.
+2.  **Crea la base de datos:**
+    ```bash
+    python manage.py migrate
+    ```
+
+3.  **Lanza el servidor:**
+    ```bash
+    python manage.py runserver
+    ```
+    Y luego entras en `http://127.0.0.1:8000`
+
+---
+
+## 👥 Usuarios que he creado para probar:
+
+He metido unos usuarios por defecto para que no tengas que registrarte:
+
+*   **Administrador (Jefe):** user `admin` / pass `admin123`
+*   **Técnico (Mantenimiento):** user `tecnico` / pass `tecnico123`
+*   **Profesor (Docente):** user `docente` / pass `docente123`
+*   **Estudiante (Alumno):** user `alumno` / pass `alumno123`
+
+---
+
+## 🧪 Cosas chulas que hace el código:
+
+1.  **Filtro inteligente de prioridad:** Cuando escribes una incidencia, el sistema busca palabras como "peligro" o "roto" y le pone prioridad alta automáticamente. Está en `views.py` bajo la función `analizar_urgencia`.
+2.  **Panel de Control (Dashboard):** He metido gráficas con **D3.js** que se dibujan según los datos reales de la base de datos (nada de datos falsos).
+3.  **Roles de usuario:** Un alumno no puede ver las gráficas de gestión ni cambiar el estado de incidencias ajenas, solo puede reportar sus propios problemas.
+4.  **Diseño Adaptable:** Funciona bien en el móvil por si el técnico tiene que ir por los pasillos con el teléfono revisando los fallos.
+
+Espero que te guste el código, ¡ha llevado su tiempo! :)
