@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'gestion',
+    'django_unie',
 ]
 
 MIDDLEWARE = [
@@ -29,12 +29,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'proyecto.urls'
+ROOT_URLCONF = 'unifix_project.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'gestion', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'django_unie', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -47,7 +47,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'proyecto.wsgi.application'
+WSGI_APPLICATION = 'unifix_project.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -56,7 +56,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'gestion.User'
+AUTH_USER_MODEL = 'django_unie.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

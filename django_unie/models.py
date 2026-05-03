@@ -1,24 +1,17 @@
-# Modelos de la base de datos para el proyecto Colegio UNIE
-# Aquí definimos las tablas donde guardamos la info (Usuarios, Incidencias y Comentarios)
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Extendemos el usuario normal de Django para meterle el campo de 'rol'
 class User(AbstractUser):
-    # Definimos qué tipos de personas pueden entrar en la app
-    TIPOS_USUARIO = (
+    ROLE_CHOICES = (
         ('ALUMNO', 'Alumno'),
         ('DOCENTE', 'Docente'),
         ('TECNICO', 'Técnico'),
         ('ADMIN', 'Administrador'),
     )
-    role = models.CharField(max_length=10, choices=TIPOS_USUARIO, default='ALUMNO')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='ALUMNO')
 
-# Este es el modelo principal: el reporte de que algo se ha roto
 class Incidencia(models.Model):
-    # Opciones para el formulario
-    OPCIONES_CATEGORIA = (
+    CATEGORY_CHOICES = (
         ('INFRAESTRUCTURA', 'Infraestructura'),
         ('TI', 'TI / Tecnología'),
         ('MOBILIARIO', 'Mobiliario'),
@@ -27,41 +20,34 @@ class Incidencia(models.Model):
         ('ACADEMICA', 'Gestión Académica'),
         ('MATRICULA', 'Secretaría / Matrícula'),
     )
-    OPCIONES_PRIORIDAD = (
+    PRIORITY_CHOICES = (
         ('LOW', 'Baja'),
         ('MEDIUM', 'Media'),
         ('HIGH', 'Alta'),
         ('URGENT', 'Urgente'),
     )
-    OPCIONES_ESTADO = (
+    STATUS_CHOICES = (
         ('OPEN', 'Abierto'),
         ('IN_PROGRESS', 'En Progreso'),
         ('RESOLVED', 'Resuelto'),
         ('CLOSED', 'Cerrado'),
     )
 
-    # Campos de la tabla
-    title = models.CharField(max_length=200, verbose_name="Asunto")
-    description = models.TextField(verbose_name="Descripción del problema")
-    category = models.CharField(max_length=20, choices=OPCIONES_CATEGORIA, verbose_name="Categoría")
-    priority = models.CharField(max_length=10, choices=OPCIONES_PRIORIDAD, default='MEDIUM', verbose_name="Prioridad")
-    status = models.CharField(max_length=15, choices=OPCIONES_ESTADO, default='OPEN', verbose_name="Estado")
-    location = models.CharField(max_length=100, verbose_name="Ubicación (Aula/Planta)")
-    
-    # Fechas automáticas
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creación")
-    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de resolución")
-    
-    # Quién lo hizo (Relación con la tabla User)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='MEDIUM')
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='OPEN')
+    location = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incidencias_creadas')
 
     def __str__(self):
-        # Para que en el admin de Django se vea el título y no un ID feo
-        return f"{self.title} - {self.get_status_display()}"
+        return f"{self.title} ({self.get_status_display()})"
 
-# Si quisiéramos añadir un chat o comentarios a cada incidencia
 class Comentario(models.Model):
     incidencia = models.ForeignKey(Incidencia, on_delete=models.CASCADE, related_name='comentarios')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField(verbose_name="Texto del comentario")
+    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
