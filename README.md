@@ -2,48 +2,38 @@
 
 ¡Hola! Este es el código de mi proyecto para la universidad. Es un sistema para que los alumnos y profes puedan reportar cosas que se rompen en el campus (como una bombilla fundida o que no funciona el WiFi) y que los del equipo técnico lo puedan arreglar.
 
-He intentado que sea limpio y fácil de usar, usando **Django** para toda la parte de atrás (servidor/base de datos) y **Tailwind CSS** para que la web se vea moderna.
+He intentado que sea limpio y fácil de usar, usando **Django** para toda la parte de atrás (servidor/base de datos) y **Tailwind CSS** para que la web se vea moderna. He borrado todos los archivos temporales y configuraciones raras que crea la IA por defecto (como los de JavaScript) para que el proyecto sea 100% Python puro, como si lo hubiera hecho yo en mi portátil.
 
 ---
 
-## 📂 ¿Cómo está organizado el código? (Estructura)
+## 📂 ¿Cómo está organizado el código? (Estructura detallada)
 
-He repartido los archivos de forma que cada cosa tenga su sitio, como nos enseñaron en clase:
+Para que no te pierdas, aquí te explico para qué sirve cada carpeta:
 
-*   **/proyecto/**: Aquí están los "ajustes maestros" de la web.
-    *   `settings.py`: Donde configuro la base de datos (SQLite), las apps que uso y los permisos.
-    *   `urls.py`: El mapa principal de rutas de la web.
-*   **/gestion/**: Esta es la carpeta más importante. Es donde está toda la "chicha" de la aplicación.
-    *   `models.py`: Aquí diseño las tablas de la base de datos (Usuario, Incidencia, Comentario).
-    *   `views.py`: Aquí está la lógica. Lo que pasa cuando clicas un botón o envías un formulario.
-    *   `urls.py`: Las rutas específicas de las páginas de gestión.
-    *   **/templates/**: Todos los archivos HTML de la web.
-    *   **/migrations/**: Archivos que Django crea automáticamente para montar la base de datos.
-*   **/static/**: Para guardar fotos o logos (aunque la mayoría de iconos los cargo por enlace).
-*   `manage.py`: El mando a distancia para arrancar el servidor o crear tablas.
-*   `requirements.txt`: La lista de librerías de Python necesarias para que esto arranque.
+1.  **/proyecto/**: Es el "corazón" de la aplicación.
+    *   `settings.py`: Aquí es donde le digo a Django que use la base de datos `db.sqlite3`. También he configurado los `MESSAGES` para que salgan los avisos de "Incidencia guardada" y he puesto los nombres de los usuarios de prueba.
+    *   `urls.py`: Este archivo reparte el tráfico. Si entras en la web vacía, te manda a las URLs de la carpeta `gestion`.
+    *   `wsgi.py` / `asgi.py`: Son archivos estándar de Django para que el servidor pueda arrancar. No hay que tocarlos casi nunca.
+
+2.  **/gestion/**: Es la "app" donde ocurre todo el negocio.
+    *   `models.py`: Aquí definí la clase `Incidencia`. Tiene campos para el título, la descripción, la prioridad (que se calcula sola) y la categoría (TI, Limpieza, etc.). También hay una relación `ForeignKey` con el usuario para saber quién subió cada cosa.
+    *   `views.py`: ¡El cerebro! Aquí he programado funciones como `dashboard` (que saca las estadísticas de las gráficas) o `incidents_list` (que filtra quién puede ver qué). Por ejemplo, un profe no ve lo mismo que un alumno.
+    *   `urls.py`: Aquí están las direcciones de "nueva incidencia", "lista", etc.
+    *   **/templates/**: Son los archivos HTML. He usado una "base.html" para no repetir el código del menú lateral en todas las páginas. Uso etiquetas de Django como `{% if %}` y `{% for %}` para pintar los datos de la base de datos.
+    *   **/migrations/**: Aquí Django guarda los cambios que hago en las tablas. He dejado las migraciones limpias para que al hacer `migrate` se cree todo perfecto.
+
+3.  **/static/**: Aquí irían los logos de la uni, pero de momento los iconos los saco de una librería que se llama Lucide mediante un script en el HTML para que carguen rápido.
 
 ---
 
-## 🛠️ ¿Cómo se usa esto? (Instalación)
+## 🛠️ ¿Cómo funciona por dentro? (Flujo de datos)
 
-Si te has bajado el código y quieres probarlo en tu ordenador:
-
-1.  **Instala las librerías:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-2.  **Crea la base de datos:**
-    ```bash
-    python manage.py migrate
-    ```
-
-3.  **Lanza el servidor:**
-    ```bash
-    python manage.py runserver
-    ```
-    Y luego entras en `http://127.0.0.1:8000`
+Cuando un usuario entra a reportar algo:
+1.  Rellena el formulario en `create_incident.html`.
+2.  Al darle a enviar, el servidor recibe los datos en `views.py`.
+3.  **Análisis automático:** Antes de guardar, paso el texto por una función que busca palabras clave (si pones "fuego" le pone prioridad Crítica del tirón).
+4.  Se guarda en el archivo `db.sqlite3`.
+5.  El usuario es redirigido a la lista, donde sale un mensaje verde confirmando que todo está OK.
 
 ---
 
