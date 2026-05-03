@@ -95,10 +95,12 @@
         <aside class="sidebase hidden lg:flex">
             <nav class="flex-1 mt-4">
                 <div class="section-title">Navegación</div>
+                {% if user.role != 'ALUMNO' %}
                 <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                     <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
                     Panel de Control
                 </a>
+                {% endif %}
                 <a href="{% url 'incidents_list' %}" class="nav-link {% if request.resolver_match.url_name == 'incidents_list' %}active{% endif %}">
                     <i data-lucide="list" class="w-4 h-4"></i>
                     Incidencias
