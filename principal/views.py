@@ -173,7 +173,7 @@ def add_comment(request, pk):
             Comentario.objects.create(
                 incidencia=incidencia,
                 user=request.user,
-                content=content
+                text=content
             )
             messages.success(request, "Comentario añadido correctamente.")
             
