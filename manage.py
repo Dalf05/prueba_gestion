@@ -16,7 +16,8 @@ def main():
     
     # Si estamos arrancando el servidor, lanzamos las migraciones primero
     if 'runserver' in sys.argv:
-        print(">>> Lanzando migraciones de forma automatica...")
+        print(">>> Sincronizando modelos y base de datos...")
+        execute_from_command_line([sys.argv[0], 'makemigrations', 'principal', '--noinput'])
         execute_from_command_line([sys.argv[0], 'migrate', '--noinput'])
         
     execute_from_command_line(sys.argv)
