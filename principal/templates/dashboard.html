@@ -73,6 +73,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const data = JSON.parse('{{ chart_data_json|safe }}') || [];
         
+        // El D3 este es un lio de narices, lo he tenido que buscar por ahi
         // Ajustar escala Y si no hay datos o los valores son bajos
         const maxValue = d3.max(data, d => d.value) || 10;
         const yDomain = maxValue < 10 ? 10 : maxValue + 5;

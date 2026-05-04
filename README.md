@@ -1,31 +1,33 @@
-# Proyecto UNIE - Gestión de Incidencias
+# Proyecto Final UNIE - Gestion de Incidencias
 
-Este es mi proyecto para la gestión de incidencias de la universidad. Lo he hecho con Django porque es bastante rápido para estas cosas.
+Hola! Este es mi proyecto para la UNI. Es una web para gestionar las quejas y cosas que se rompen en el campus.
 
-## Como hacerlo funcionar
+## Como hacerlo funcionar (IMPORTANTE)
 
-1. **Instalar las librerias:**
-   Tienes que instalar lo que hay en el requirements.txt:
+Para que funcione bien en tu ordenador:
+
+1. **Librerias:**
+   Instala lo que he puesto en el requirements.txt:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **La base de datos:**
-   Hay que crear las tablas de la base de datos (he usado sqlite):
+2. **La base de datos (Si te da error de 'no such table' mira aqui):**
+   Tienes que crear las tablas, yo he usado sqlite para no liarme con servidores:
    ```bash
    python manage.py makemigrations principal
    python manage.py migrate
    ```
+   *Si te sale error de que no encuentra la tabla `principal_user`, es que te has saltado este paso.*
 
-3. **Crear el admin:**
-   Para poder entrar la primera vez necesitas un superusuario:
+3. **Crear tu usuario:**
+   Como no hay registro publico, create un admin:
    ```bash
    python manage.py createsuperuser
    ```
-   *Nota: Acuérdate de entrar en /admin y ponerte el rol de ADMIN en tu usuario, si no no verás el panel.*
+   *Luego entra en /admin y cambiate el rol a ADMIN en tu perfil, que si no no ves las graficas.*
 
-4. **Arrancar:**
-   Para ver la web:
+4. **Ejecutar:**
    ```bash
    python manage.py runserver
    ```
