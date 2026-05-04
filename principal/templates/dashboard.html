@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block header_title %}Panel de Control{% endblock %}
+{% block header_subtitle %}ESTADÍSTICAS Y RENDIMIENTO CAMPUS{% endblock %}
+
+{% block content %}
+<!-- El contenedor principal de mi dashboard -->
+<div class="space-y-8 animate-in fade-in duration-500">
+    <!-- Numeros principales de arriba -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="caja-blanca p-6 border-l-4 border-unie">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Incidencias</p>
+            <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-slate-800">{{ total_count }}</span>
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-slate-300"></i>
+            </div>
+        </div>
+        <div class="caja-blanca p-6 border-l-4 border-amber-500">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pendientes</p>
+            <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-slate-800">{{ open_count }}</span>
+                <i data-lucide="clock" class="w-5 h-5 text-amber-500"></i>
+            </div>
+        </div>
+        <div class="caja-blanca p-6 border-l-4 border-unie">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Tiempo Resol. Promedio</p>
+            <div class="flex items-baseline gap-1">
+                <span class="text-3xl font-bold text-slate-800">{{ avg_res_time }}</span>
+                <span class="text-sm font-medium text-slate-400">horas</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Gráfico hecho con D3 -->
+        <div class="lg:col-span-2 space-y-4">
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Distribución por Categoría</h2>
+            <div class="caja-blanca p-8 h-[400px]">
+                <div id="activity-chart" class="w-full h-full"></div>
+            </div>
+        </div>
+
+        <!-- Lo ultimo que ha pasado -->
+        <div class="space-y-4">
+            <h2 class="text-xs font-bold text-slate-800 uppercase tracking-widest">Actividad Reciente</h2>
+            <div class="caja-blanca divide-y divide-slate-100">
+                {% if recent_incidents %}
+                    {% for inc in recent_incidents %}
+                    <div class="p-6 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">{{ inc.title|truncatechars:30 }}</p>
+                            <p class="text-[10px] text-slate-400">{{ inc.location }} · {{ inc.created_at|timesince }} ago</p>
+                        </div>
+                        <span class="flex h-2 w-2 rounded-full 
+                            {% if inc.status == 'OPEN' %}bg-amber-500
+                            {% elif inc.status == 'IN_PROGRESS' %}bg-blue-500
+                            {% else %}bg-emerald-500{% endif %}"></span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-10 text-center text-slate-400 text-[10px] uppercase tracking-widest">
+                        Sin actividad reciente registrada
+                    </div>
+                {% endif %}
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const data = JSON.parse('{{ chart_data_json|safe }}') || [];
+        
+        // Ajustar escala Y si no hay datos o los valores son bajos
+        const maxValue = d3.max(data, d => d.value) || 10;
+        const yDomain = maxValue < 10 ? 10 : maxValue + 5;
+
+        const chartContainer = document.getElementById('activity-chart');
+        const width = chartContainer.clientWidth - 40;
+        const height = chartContainer.clientHeight - 60;
+
+        const svg = d3.select("#activity-chart")
+            .append("svg")
+            .attr("width", width + 40)
+            .attr("height", height + 60)
+            .append("g")
+            .attr("transform", `translate(20, 20)`);
+
+        const x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.5)
+            .domain(data.map(d => d.label));
+
+        const y = d3.scaleLinear()
+            .range([height, 0])
+            .domain([0, yDomain]);
+
+        svg.append("g")			
+            .attr("class", "grid")
+            .attr("stroke", "#F3F4F6")
+            .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(""))
+            .call(g => g.select(".domain").remove());
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(x).tickSize(0).tickPadding(15))
+            .selectAll("text")
+            .style("font-size", "10px")
+            .style("font-weight", "600")
+            .style("fill", "#64748B");
+
+        svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d.label))
+            .attr("width", x.bandwidth())
+            .attr("y", height)
+            .attr("height", 0)
+            .attr("fill", "#002147")
+            .attr("rx", 2)
+            .transition()
+            .duration(800)
+            .attr("y", d => y(d.value))
+            .attr("height", d => height - y(d.value));
+            
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

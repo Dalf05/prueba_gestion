@@ -1,48 +1,39 @@
-# UNIE Universidad - Portal de Gestión (Django Version)
+# Proyecto UNIE - Gestión de Incidencias
 
-Esta es la versión completa en Django y Python del portal de gestión de incidencias, diseñada para ser idéntica en funcionalidad y estética a la versión de React.
+Este es mi proyecto para la gestión de incidencias de la universidad. Lo he hecho con Django porque es bastante rápido para estas cosas.
 
-## Requisitos Previos
+## Como hacerlo funcionar
 
-- Python 3.8 o superior instalado.
-- Pip (gestor de paquetes de Python).
-
-## Pasos para la Instalación Local
-
-1. **Instalar Dependencias:**
-   Abre una terminal en la carpeta raíz del proyecto y ejecuta:
+1. **Instalar las librerias:**
+   Tienes que instalar lo que hay en el requirements.txt:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Preparar la Base de Datos:**
-   Ejecuta las migraciones para crear las tablas necesarias:
+2. **La base de datos:**
+   Hay que crear las tablas de la base de datos (he usado sqlite):
    ```bash
-   python manage.py makemigrations django_unie
+   python manage.py makemigrations principal
    python manage.py migrate
    ```
 
-3. **Crear Usuario Administrador:**
-   Para poder acceder al portal, necesitas una cuenta. Crea un superusuario ejecutando:
+3. **Crear el admin:**
+   Para poder entrar la primera vez necesitas un superusuario:
    ```bash
    python manage.py createsuperuser
    ```
-   *Nota: Sigue las instrucciones en pantalla. Una vez creado, entra en el panel de administración (`/admin`) para asignarte el rol de 'ADMIN' en tu perfil de usuario, ya que por defecto Django no asigna el rol personalizado.*
+   *Nota: Acuérdate de entrar en /admin y ponerte el rol de ADMIN en tu usuario, si no no verás el panel.*
 
-4. **Iniciar el Servidor:**
-   Lanza el servidor de desarrollo:
+4. **Arrancar:**
+   Para ver la web:
    ```bash
    python manage.py runserver
    ```
 
-5. **Acceder a la Aplicación:**
-   Abre tu navegador en: `http://127.0.0.1:8000/`
+Luego entras en `http://127.0.0.1:8000/` y ya está.
 
-## Características Implementadas
-
-- **Interfaz Corporativa:** Diseño basado en Tailwind CSS con los colores y tipografía de UNIE.
-- **Sistema de Roles:** Lógica diferenciada para Alumnos, Docentes, Técnicos y Administradores.
-- **Dashboard con KPIs:** Visualización de estadísticas en tiempo real.
-- **Gestión de Incidencias:** Listado maestro y formulario de creación con análisis de prioridad.
-- **Pestaña de Configuración:** Panel exclusivo para administradores (Gestión de usuarios y campus).
-- **Imágenes Reales:** Integración con Unsplash para una estética profesional.
+## Cosas que tiene la web:
+- Dashboard con graficos de D3 (me costó un poco pillarlo).
+- Roles: Alumno, Profe, Tecnico y Admin.
+- Registro de quejas/incidencias segun donde pase.
+- Color azul de la UNIE.

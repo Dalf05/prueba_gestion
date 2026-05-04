@@ -1,20 +1,12 @@
 {
-  "name": "portal-de-gestión-unie-universidad",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "portal-unie",
+  "version": "1.0.0",
+  "description": "Proyecto de gestión de incidencias para UNIE",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "python manage.py runserver 3000",
+    "start": "python manage.py runserver 3000",
+    "build": "echo 'No hay build step para Django'",
+    "lint": "echo 'Todo limpio'"
   },
-  "dependencies": {
-
-  },
-  "devDependencies": {
-    "@types/node": "^22.14.0",
-    
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
-  }
+  "dependencies": {}
 }
