@@ -46,7 +46,7 @@
             <div class="caja-blanca divide-y divide-slate-100">
                 {% if recent_incidents %}
                     {% for inc in recent_incidents %}
-                    <div class="p-6 flex items-center justify-between">
+                    <a href="{% url 'incident_detail' inc.id %}" class="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div>
                             <p class="text-xs font-bold text-slate-800">{{ inc.title|truncatechars:30 }}</p>
                             <p class="text-[10px] text-slate-400">{{ inc.location }} · {{ inc.created_at|timesince }} ago</p>
@@ -55,7 +55,7 @@
                             {% if inc.status == 'OPEN' %}bg-amber-500
                             {% elif inc.status == 'IN_PROGRESS' %}bg-blue-500
                             {% else %}bg-emerald-500{% endif %}"></span>
-                    </div>
+                    </a>
                     {% endfor %}
                 {% else %}
                     <div class="p-10 text-center text-slate-400 text-[10px] uppercase tracking-widest">

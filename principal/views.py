@@ -72,23 +72,22 @@ def dashboard(request):
 @login_required
 def incidents_list(request):
     user = request.user
-    # Aqui tambien filtramos segun quien sea el que mira la lista
+    # Filtramos segun quien sea el que mira la lista
     if user.role in ['ADMIN', 'TECNICO']:
         queryset = Incidencia.objects.all()
     elif user.role == 'DOCENTE':
+        # Los docentes ven lo de su categoria + lo suyo propio
         categories = ['TI', 'MOBILIARIO', 'INFRAESTRUCTURA', 'ACADEMICA']
-        queryset = Incidencia.objects.filter(category__in=categories)
+        from django.db.models import Q
+        queryset = Incidencia.objects.filter(Q(category__in=categories) | Q(created_by=user))
     elif user.role == 'ALUMNO':
-        categories = ['LIMPIEZA', 'MOBILIARIO', 'ACADEMICA', 'MATRICULA']
-        queryset = Incidencia.objects.filter(category__in=categories)
+        # Los alumnos tienen que ver sus propias quejas siempre
+        queryset = Incidencia.objects.filter(created_by=user)
     else:
         queryset = Incidencia.objects.none()
     
-    # Si eres admin o tecnico ves todo, si no solo lo que no esta resuelto todavia
-    if user.role in ['ADMIN', 'TECNICO']:
-        incidencias = queryset.order_by('-created_at')
-    else:
-        incidencias = queryset.exclude(status__in=['RESOLVED', 'CLOSED']).order_by('-created_at')
+    # Ordenamos por fecha para ver lo ultimo arriba
+    incidencias = queryset.order_by('-created_at')
         
     return render(request, 'incidents.html', {'incidencias': incidencias})
 
@@ -146,6 +145,44 @@ def calcular_prioridad(title, description):
         return 'MEDIUM'
         
     return 'LOW'
+
+@login_required
+def incident_detail(request, pk):
+    # Cogemos la incidencia o damos error si no existe
+    incidencia = get_object_or_404(Incidencia, pk=pk)
+    
+    # Seguridad: Un alumno no deberia ver incidencias de otros
+    if request.user.role == 'ALUMNO' and incidencia.created_by != request.user:
+        messages.error(request, "No tienes permiso para ver esta incidencia.")
+        return redirect('incidents_list')
+        
+    comentarios = incidencia.comentarios.all().order_by('created_at')
+    
+    return render(request, 'incident_detail.html', {
+        'incidencia': incidencia,
+        'comentarios': comentarios
+    })
+
+@login_required
+def add_comment(request, pk):
+    incidencia = get_object_or_404(Incidencia, pk=pk)
+    
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Comentario.objects.create(
+                incidencia=incidencia,
+                user=request.user,
+                content=content
+            )
+            messages.success(request, "Comentario añadido correctamente.")
+            
+            # Si alguien comenta, quiza el estado deberia pasar a 'En progreso'
+            if incidencia.status == 'OPEN' and request.user.role in ['ADMIN', 'TECNICO']:
+                incidencia.status = 'IN_PROGRESS'
+                incidencia.save()
+                
+    return redirect('incident_detail', pk=pk)
 
 @login_required
 def update_status(request, pk):

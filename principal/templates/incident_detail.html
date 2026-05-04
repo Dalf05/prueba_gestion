@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block header_title %}Detalle de Incidencia #{{ incidencia.id }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Informacion Principal -->
+    <div class="lg:col-span-2 space-y-6">
+        <div class="caja-blanca p-8">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">{{ incidencia.title }}</h2>
+                    <div class="flex items-center gap-4 text-xs font-medium text-slate-500">
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                            {{ incidencia.created_at|date:"d M Y, H:i" }}
+                        </span>
+                        <span class="flex items-center gap-1 uppercase">
+                            <i data-lucide="tag" class="w-3.5 h-3.5 text-unie"></i>
+                            {{ incidencia.get_category_display }}
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                            {{ incidencia.location }}
+                        </span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="inline-block px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider
+                        {% if incidencia.priority == 'URGENT' %}bg-rose-100 text-rose-700
+                        {% elif incidencia.priority == 'HIGH' %}bg-orange-100 text-orange-700
+                        {% elif incidencia.priority == 'MEDIUM' %}bg-blue-100 text-blue-700
+                        {% else %}bg-slate-100 text-slate-700{% endif %}">
+                        Prioridad: {{ incidencia.get_priority_display }}
+                    </span>
+                    <div class="mt-2">
+                        <span class="inline-block px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider border
+                            {% if incidencia.status == 'OPEN' %}border-amber-200 bg-amber-50 text-amber-700
+                            {% elif incidencia.status == 'IN_PROGRESS' %}border-blue-200 bg-blue-50 text-blue-700
+                            {% elif incidencia.status == 'RESOLVED' %}border-emerald-200 bg-emerald-50 text-emerald-700
+                            {% else %}border-slate-200 bg-slate-50 text-slate-700{% endif %}">
+                            Estado: {{ incidencia.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prose prose-sm max-w-none text-slate-600 border-t border-slate-100 pt-6">
+                <p class="whitespace-pre-line text-sm">{{ incidencia.description }}</p>
+            </div>
+        </div>
+
+        <!-- Chat / Comentarios -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2">Conversación y Actualizaciones</h3>
+            
+            {% if comentarios %}
+                {% for comentario in comentarios %}
+                <div class="caja-blanca p-5 {% if comentario.user.role in 'ADMIN,TECNICO' %}border-l-4 border-unie{% endif %}">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center font-bold text-[10px] text-slate-500">
+                                {{ comentario.user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">{{ comentario.user.username|capfirst }}</span>
+                            <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded
+                                {% if comentario.user.role in 'ADMIN,TECNICO' %}bg-unie text-white
+                                {% else %}bg-slate-100 text-slate-500{% endif %}">
+                                {{ comentario.user.get_role_display }}
+                            </span>
+                        </div>
+                        <span class="text-[10px] text-slate-400">{{ comentario.created_at|date:"d/m/y H:i" }}</span>
+                    </div>
+                    <p class="text-sm text-slate-600 pl-8 leading-relaxed">{{ comentario.content }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="py-10 text-center caja-blanca border-dashed border-2 border-slate-200 bg-slate-50/50 shadow-none">
+                    <i data-lucide="message-square" class="w-8 h-8 text-slate-300 mx-auto mb-3"></i>
+                    <p class="text-xs text-slate-400 font-medium">Aún no hay comentarios en esta incidencia.</p>
+                </div>
+            {% endif %}
+
+            <!-- Formulario de comentario -->
+            {% if incidencia.status != 'CLOSED' %}
+            <div class="caja-blanca p-6 mt-6">
+                <form action="{% url 'add_comment' incidencia.id %}" method="POST">
+                    {% csrf_token %}
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-3">Añadir mensaje</label>
+                    <textarea name="content" rows="3" required
+                        class="w-full text-sm border border-slate-200 rounded p-4 focus:ring-1 focus:ring-unie outline-none transition-all placeholder:text-slate-300"
+                        placeholder="Escribe aquí tu duda o actualización..."></textarea>
+                    <div class="flex justify-end mt-4">
+                        <button type="submit" class="bg-unie text-white text-[10px] font-bold uppercase tracking-widest px-6 py-2.5 rounded hover:opacity-90 transition-all flex items-center gap-2">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            Enviar Mensaje
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sidebar de Acciones -->
+    <div class="space-y-6">
+        <div class="caja-blanca p-6">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wide mb-4">Información del Autor</h4>
+            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded">
+                <div class="w-10 h-10 rounded-full bg-unie flex items-center justify-center font-bold text-sm text-white">
+                    {{ incidencia.created_by.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-slate-700">{{ incidencia.created_by.username|capfirst }}</p>
+                    <p class="text-[10px] text-slate-400 uppercase font-medium">{{ incidencia.created_by.get_role_display }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% if user.role in 'ADMIN,TECNICO' or user == incidencia.created_by %}
+        <div class="caja-blanca p-6 border-t-4 border-gold">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wide mb-4">Gestión de Estado</h4>
+            <form action="{% url 'update_status' incidencia.id %}" method="POST" class="space-y-4">
+                {% csrf_token %}
+                <select name="status" class="w-full text-sm border border-slate-200 rounded p-2 focus:ring-1 focus:ring-unie outline-none">
+                    {% for val, label in incidencia.STATUS_CHOICES %}
+                    <option value="{{ val }}" {% if incidencia.status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="w-full bg-gold text-white text-[10px] font-bold uppercase tracking-widest py-3 rounded hover:opacity-90 transition-all">
+                    Actualizar Estado
+                </button>
+            </form>
+            
+            {% if user.role in 'ADMIN,TECNICO' and incidencia.status == 'OPEN' %}
+            <p class="mt-4 text-[10px] text-slate-400 leading-relaxed italic">
+                * Al pasar a "En progreso", el autor recibirá una notificación visual.
+            </p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <a href="{% url 'incidents_list' %}" class="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-unie transition-all">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            Volver al listado
+        </a>
+    </div>
+</div>
+{% endblock %}

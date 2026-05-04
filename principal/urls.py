@@ -11,6 +11,8 @@ urlpatterns = [
     # Lo que se ve dentro de la web
     path('', views.dashboard, name='dashboard'), # Pagina principal nada mas entrar
     path('incidencias/', views.incidents_list, name='incidents_list'), # Listado de quejas
+    path('incidencias/<int:pk>/', views.incident_detail, name='incident_detail'), # Detalle y chat
+    path('incidencias/<int:pk>/comentar/', views.add_comment, name='add_comment'), # Para añadir un mensaje
     path('incidencias/nueva/', views.create_incident, name='create_incident'), # Formulario para crear una
     path('incidencias/<int:pk>/estado/', views.update_status, name='update_status'), # Para cambiar el estado
     path('configuracion/', views.settings_view, name='settings'), # Ajustes del admin
