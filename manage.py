@@ -14,11 +14,14 @@ def main():
             "en tu entorno virtual o mira el requirements.txt."
         ) from exc
     
-    # Si estamos arrancando el servidor, lanzamos las migraciones primero
-    if 'runserver' in sys.argv:
-        print(">>> Sincronizando modelos y base de datos...")
-        execute_from_command_line([sys.argv[0], 'makemigrations', 'principal', '--noinput'])
-        execute_from_command_line([sys.argv[0], 'migrate', '--noinput'])
+    # Si estamos arrancando el servidor, lanzamos las migraciones primero (solo una vez)
+    if 'runserver' in sys.argv and os.environ.get('RUN_MAIN') != 'true':
+        print(">>> Sincronizando modelos y base de datos (una sola vez)...")
+        try:
+            execute_from_command_line([sys.argv[0], 'makemigrations', 'principal', '--noinput'])
+            execute_from_command_line([sys.argv[0], 'migrate', '--noinput'])
+        except Exception as e:
+            print(f">>> Error al migrar: {e}")
         
     execute_from_command_line(sys.argv)
 

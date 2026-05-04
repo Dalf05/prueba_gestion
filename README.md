@@ -32,6 +32,10 @@ Para que funcione bien en tu ordenador, sigue estos pasos (ayer me dio guerra la
    ```bash
    python manage.py runserver
    ```
+   **IMPORTANTE:** Si te sale un error de **'WinError 1450: Recursos insuficientes'**, es porque Windows se agobia vigilando tantos archivos. Ejecútalo así para que funcione:
+   ```bash
+   python manage.py runserver --noreload
+   ```
    Y entras en `http://127.0.0.1:8000/`.
 
 Luego entras en `http://127.0.0.1:8000/` y ya está.
