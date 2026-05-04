@@ -6,6 +6,8 @@ import django.db.models.deletion
 import django.utils.timezone
 
 
+# Migracion generada automaticamente por Django para mis modelos
+# No tocar mucho que se lia
 class Migration(migrations.Migration):
 
     initial = True

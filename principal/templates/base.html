@@ -26,14 +26,15 @@
         .text-unie { color: var(--unie-blue); }
         .border-gold { border-color: var(--unie-gold); }
         
-        /* Layout Structure */
-        .app-shell {
+        /* Estructura de la pagina */
+        .contenedor-todo {
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        .sidebase {
+        /* El menu de la izquierda, le pongo el azul de la uni */
+        .menu-lateral {
             width: 260px;
             background: var(--unie-blue);
             display: flex;
@@ -42,8 +43,8 @@
             color: white;
         }
 
-        /* Nav Items */
-        .nav-link {
+        /* Los botones del menu */
+        .enlace-menu {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -55,12 +56,12 @@
             border-left: 3px solid transparent;
         }
 
-        .nav-link:hover {
+        .enlace-menu:hover {
             background: rgba(255, 255, 255, 0.05);
             color: white;
         }
 
-        .nav-link.active {
+        .enlace-menu.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--unie-gold);
@@ -90,18 +91,18 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body class="bg-[#F9FAFB]">
-    <div class="app-shell w-full">
-        <!-- Sidebar -->
-        <aside class="sidebase hidden lg:flex">
+    <div class="contenedor-todo w-full">
+        <!-- Sidebar con el menu -->
+        <aside class="menu-lateral hidden lg:flex">
             <nav class="flex-1 mt-4">
                 <div class="section-title">Navegación</div>
                 {% if user.role != 'ALUMNO' %}
-                <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="enlace-menu {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                     <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
                     Panel de Control
                 </a>
                 {% endif %}
-                <a href="{% url 'incidents_list' %}" class="nav-link {% if request.resolver_match.url_name == 'incidents_list' %}active{% endif %}">
+                <a href="{% url 'incidents_list' %}" class="enlace-menu {% if request.resolver_match.url_name == 'incidents_list' %}active{% endif %}">
                     <i data-lucide="list" class="w-4 h-4"></i>
                     Incidencias
                 </a>

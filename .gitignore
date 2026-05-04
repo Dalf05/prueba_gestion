@@ -1,8 +1,14 @@
+# Archivos que no quiero que se suban al Git
 node_modules/
-build/
 dist/
-coverage/
 .DS_Store
 *.log
 .env*
 !.env.example
+
+# Pyton y Django
+__pycache__/
+*.pyc
+db.sqlite3
+static/admin/
+media/

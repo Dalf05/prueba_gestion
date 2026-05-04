@@ -4,33 +4,35 @@ Hola! Este es mi proyecto para la UNI. Es una web para gestionar las quejas y co
 
 ## Como hacerlo funcionar (IMPORTANTE)
 
-Para que funcione bien en tu ordenador:
+Para que funcione bien en tu ordenador, sigue estos pasos (ayer me dio guerra la base de datos):
 
 1. **Librerias:**
-   Instala lo que he puesto en el requirements.txt:
+   Instala lo que he puesto en el `requirements.txt`:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **La base de datos (Si te da error de 'no such table' mira aqui):**
-   Tienes que crear las tablas, yo he usado sqlite para no liarme con servidores:
-   ```bash
-   python manage.py makemigrations principal
-   python manage.py migrate
-   ```
-   *Si te sale error de que no encuentra la tabla `principal_user`, es que te has saltado este paso.*
+2. **La base de datos (Si te da error de 'no such table' o 'InconsistentMigrationHistory'):**
+   Si has cambiado carpetas de sitio como yo, a veces Django se ralla. Lo mejor es:
+   - Borrar el archivo `db.sqlite3` si ya existe.
+   - Ejecutar esto para crear las carpetas de migraciones si no estan: `python manage.py makemigrations principal`
+   - Y luego lanzar las tablas: `python manage.py migrate`
+   
+   *Si te sale error de que no encuentra la tabla `principal_user`, es que te has saltado el migrate.*
 
 3. **Crear tu usuario:**
-   Como no hay registro publico, create un admin:
+   Como no hay registro publico (por seguridad), create un admin a mano:
    ```bash
    python manage.py createsuperuser
    ```
-   *Luego entra en /admin y cambiate el rol a ADMIN en tu perfil, que si no no ves las graficas.*
+   *Luego entra en /admin y cambiate el rol a ADMIN en tu perfil, si no verás las gráficas vacías.*
 
 4. **Ejecutar:**
+   Para ver la web en local:
    ```bash
    python manage.py runserver
    ```
+   Y entras en `http://127.0.0.1:8000/`.
 
 Luego entras en `http://127.0.0.1:8000/` y ya está.
 

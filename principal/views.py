@@ -103,7 +103,7 @@ def create_incident(request):
         description = request.POST.get('description')
         
         # Funcion que calcula la prioridad automaticamente
-        priority = analyze_priority_logic(title, description)
+        priority = calcular_prioridad(title, description)
         
         incidencia = Incidencia.objects.create(
             title=title,
@@ -126,22 +126,22 @@ def settings_view(request):
     locations = Incidencia.objects.values_list('location', flat=True).distinct()
     return render(request, 'settings.html', {'system_users': users, 'locations': locations})
 
-def analyze_priority_logic(title, description):
+def calcular_prioridad(title, description):
     """
     Funcion para ver si una incidencia es urgente o no.
-    Busca palabras raras y decide.
+    He puesto unas palabras clave para que decida solo.
     """
     text = (title + " " + description).lower()
     
-    # URGENTE: si hay fuego, robos o cosas graves
+    # URGENTE: si hay fuego, robos o cosas graves de seguridad
     if any(word in text for word in ['peligro', 'fuego', 'inundación', 'robo', 'emergencia', 'crítico']):
         return 'URGENT'
     
-    # ALTA: si se para la clase
+    # ALTA: cosas que impiden dar clase normal
     if any(word in text for word in ['no funciona', 'bloqueado', 'roto', 'clase', 'examen']):
         return 'HIGH'
     
-    # MEDIA: casi todo lo demas por defecto
+    # MEDIA: casi todo lo demas por defecto si no es urgente
     if any(word in text for word in ['luz', 'aire', 'sucio', 'ruido']):
         return 'MEDIUM'
         

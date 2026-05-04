@@ -2,25 +2,27 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 # Mi modelo de usuario para diferenciar entre alumnos y profes
+# Solo he añadido un campo de rol para saber quien es quien
 class User(AbstractUser):
     ROLE_CHOICES = (
         ('ALUMNO', 'Alumno'),
         ('DOCENTE', 'Docente'),
-        ('TECNICO', 'Técnico'),
+        ('TECNICO', 'Tecnico'),
         ('ADMIN', 'Administrador'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='ALUMNO')
 
 # Este es el modelo principal para las quejas o incidencias
 class Incidencia(models.Model):
+    # Las opciones de los desplegables las pongo aqui para no liarme
     CATEGORY_CHOICES = (
         ('INFRAESTRUCTURA', 'Infraestructura'),
-        ('TI', 'TI / Tecnología'),
+        ('TI', 'TI / Tecnologia'),
         ('MOBILIARIO', 'Mobiliario'),
         ('LIMPIEZA', 'Limpieza'),
         ('SEGURIDAD', 'Seguridad'),
-        ('ACADEMICA', 'Gestión Académica'),
-        ('MATRICULA', 'Secretaría / Matrícula'),
+        ('ACADEMICA', 'Gestion Academica'),
+        ('MATRICULA', 'Secretaria / Matricula'),
     )
     PRIORITY_CHOICES = (
         ('LOW', 'Baja'),
@@ -48,7 +50,7 @@ class Incidencia(models.Model):
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
 
-# Para que la gente pueda comentar en las incidencias
+# Para que la gente pueda comentar en las incidencias (chat basico)
 class Comentario(models.Model):
     incidencia = models.ForeignKey(Incidencia, on_delete=models.CASCADE, related_name='comentarios')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
