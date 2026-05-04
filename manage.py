@@ -13,6 +13,12 @@ def main():
             "No he podido importar Django. Asegurate de tenerlo instalado "
             "en tu entorno virtual o mira el requirements.txt."
         ) from exc
+    
+    # Si estamos arrancando el servidor, lanzamos las migraciones primero
+    if 'runserver' in sys.argv:
+        print(">>> Lanzando migraciones de forma automatica...")
+        execute_from_command_line([sys.argv[0], 'migrate', '--noinput'])
+        
     execute_from_command_line(sys.argv)
 
 if __name__ == '__main__':
